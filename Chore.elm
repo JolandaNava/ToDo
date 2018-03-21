@@ -1,28 +1,25 @@
--- Making a module for task 
--- I want to call this module quest instead of task, but I am unsure how changing the name of the file
--- would affect pushing the changes to the remote
-module Task exposing (..)
+module Chore exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput, onDoubleClick, onBlur)
 import Html.Attributes exposing (style, type_, placeholder, value)
 import Json.Decode as Json
 
--- The Task file on the todomvc does not have a main function at all, I am following that
+-- The Chore file on the todomvc does not have a main function at all, I am following that
 
 -- MODEL 
 
 type alias Model =
-  { task : String
+  { chore : String
   , id : Int
   , completed : Bool
-  , changedtask : Maybe String
+  , changedchore : Maybe String
   }
 
 
 init : String -> Int -> (Model, Cmd Msg)
-init task id =
-  (Model task id False Nothing , Cmd.none)
+init chore id =
+  (Model chore id False Nothing , Cmd.none)
 
 
 
@@ -30,11 +27,11 @@ init task id =
 
 type Msg
     = NoOp
-    | RewriteTask
+    | RewriteChore
     | StoreChanges String
     | CommitChange
-    | DeleteTask 
-    | ToggleTask 
+    | DeleteChore 
+    | ToggleChore 
 
 update : Msg -> Model -> Maybe Model
 update msg model =
@@ -42,24 +39,24 @@ update msg model =
     NoOp ->
         Just model
     
-    DeleteTask ->
+    DeleteChore ->
         Nothing
     
     StoreChanges text ->
-        Just { model | changedtask = Just text }
+        Just { model | changedchore = Just text }
 
     CommitChange ->
-        case model.changedtask of
+        case model.changedchore of
             Nothing ->
                 Nothing
             Just text ->
-                Just { model | task = text, changedtask = Nothing}
+                Just { model | chore = text, changedchore = Nothing}
     
-    ToggleTask ->
+    ToggleChore ->
         Just { model | completed = not model.completed }
     
-    RewriteTask ->
-        Just { model | changedtask = Just model.task }
+    RewriteChore ->
+        Just { model | changedchore = Just model.chore }
     
   
 
@@ -82,13 +79,13 @@ view model =
         [ input 
             [ type_ "checkbox"
             , Html.Attributes.checked model.completed
-            , onClick (ToggleTask)
+            , onClick (ToggleChore)
             ] []
         , label 
-            [ onDoubleClick RewriteTask]
-            [ text model.task ]
+            [ onDoubleClick RewriteChore]
+            [ text model.chore ]
         , button 
-            [ onClick DeleteTask ] 
+            [ onClick DeleteChore ] 
             [ text "X" ]
         ] 
     , input 
@@ -111,6 +108,4 @@ enterKey msg int =
 
 
 -- NEXT STEPS
--- find out how to rename file and push renamed version to remote
--- commit latest version of todo to master branch
--- start re-writing todo to use the task module instead.
+-- start re-writing todo to use the chore module instead.

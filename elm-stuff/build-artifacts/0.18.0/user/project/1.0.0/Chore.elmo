@@ -1,0 +1,154 @@
+var _user$project$Chore$onKeyDown = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'keydown',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
+};
+var _user$project$Chore$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Chore$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'NoOp':
+				return _elm_lang$core$Maybe$Just(model);
+			case 'DeleteChore':
+				return _elm_lang$core$Maybe$Nothing;
+			case 'StoreChanges':
+				return _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							changedchore: _elm_lang$core$Maybe$Just(_p0._0)
+						}));
+			case 'CommitChange':
+				var _p1 = model.changedchore;
+				if (_p1.ctor === 'Nothing') {
+					return _elm_lang$core$Maybe$Nothing;
+				} else {
+					return _elm_lang$core$Maybe$Just(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{chore: _p1._0, changedchore: _elm_lang$core$Maybe$Nothing}));
+				}
+			case 'ToggleChore':
+				return _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{completed: !model.completed}));
+			default:
+				return _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							changedchore: _elm_lang$core$Maybe$Just(model.chore)
+						}));
+		}
+	});
+var _user$project$Chore$Model = F4(
+	function (a, b, c, d) {
+		return {chore: a, id: b, completed: c, changedchore: d};
+	});
+var _user$project$Chore$init = F2(
+	function (chore, id) {
+		return {
+			ctor: '_Tuple2',
+			_0: A4(_user$project$Chore$Model, chore, id, false, _elm_lang$core$Maybe$Nothing),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	});
+var _user$project$Chore$ToggleChore = {ctor: 'ToggleChore'};
+var _user$project$Chore$DeleteChore = {ctor: 'DeleteChore'};
+var _user$project$Chore$CommitChange = {ctor: 'CommitChange'};
+var _user$project$Chore$StoreChanges = function (a) {
+	return {ctor: 'StoreChanges', _0: a};
+};
+var _user$project$Chore$RewriteChore = {ctor: 'RewriteChore'};
+var _user$project$Chore$NoOp = {ctor: 'NoOp'};
+var _user$project$Chore$enterKey = F2(
+	function (msg, $int) {
+		return _elm_lang$core$Native_Utils.eq($int, 13) ? msg : _user$project$Chore$NoOp;
+	});
+var _user$project$Chore$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$checked(model.completed),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Chore$ToggleChore),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$label,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onDoubleClick(_user$project$Chore$RewriteChore),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(model.chore),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Chore$DeleteChore),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('X'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Chore$onKeyDown(
+								_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
