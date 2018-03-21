@@ -1,0 +1,159 @@
+var _user$project$Task$onKeyDown = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'keydown',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
+};
+var _user$project$Task$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Task$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'NewTask':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'DeleteTask':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'CommitChange':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ToggleTask':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'SelectTask':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$Task$Model = F4(
+	function (a, b, c, d) {
+		return {task: a, id: b, completed: c, changedtask: d};
+	});
+var _user$project$Task$init = F2(
+	function (task, id) {
+		return {
+			ctor: '_Tuple2',
+			_0: A4(_user$project$Task$Model, task, id, false, _elm_lang$core$Maybe$Nothing),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	});
+var _user$project$Task$ToggleTask = function (a) {
+	return {ctor: 'ToggleTask', _0: a};
+};
+var _user$project$Task$CommitChange = function (a) {
+	return {ctor: 'CommitChange', _0: a};
+};
+var _user$project$Task$DeleteTask = function (a) {
+	return {ctor: 'DeleteTask', _0: a};
+};
+var _user$project$Task$NewTask = F2(
+	function (a, b) {
+		return {ctor: 'NewTask', _0: a, _1: b};
+	});
+var _user$project$Task$StoreChanges = function (a) {
+	return {ctor: 'StoreChanges', _0: a};
+};
+var _user$project$Task$SelectTask = function (a) {
+	return {ctor: 'SelectTask', _0: a};
+};
+var _user$project$Task$NoOp = {ctor: 'NoOp'};
+var _user$project$Task$enterKey = F2(
+	function (msg, $int) {
+		return _elm_lang$core$Native_Utils.eq($int, 13) ? msg : _user$project$Task$NoOp;
+	});
+var _user$project$Task$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$checked(model.completed),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(
+										_user$project$Task$ToggleTask(model.id)),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$label,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onDoubleClick(
+									_user$project$Task$SelectTask(model.id)),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(model.task),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(
+										_user$project$Task$DeleteTask(model.id)),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('X'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(_user$project$Task$StoreChanges),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Task$onKeyDown(
+								_user$project$Task$enterKey(
+									_user$project$Task$CommitChange(model.id))),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onBlur(
+									_user$project$Task$CommitChange(model.id)),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Task$main = _elm_lang$html$Html$program(
+	{
+		init: A2(_user$project$Task$init, '', 0),
+		view: _user$project$Task$view,
+		update: _user$project$Task$update,
+		subscriptions: _user$project$Task$subscriptions
+	})();
