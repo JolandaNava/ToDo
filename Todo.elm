@@ -232,7 +232,6 @@ tasklist list =
 
 
 -- NEXT STEPS 
--- fix the checkbox issue by learning how to use Html.Keyed 
 -- double-click on a to-do allows you to mofify it
 -- Re-order buttons to be where they should be, kinda
 -- Display buttons only when the actions are possible 
