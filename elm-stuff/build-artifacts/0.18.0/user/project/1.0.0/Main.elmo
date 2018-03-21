@@ -1,0 +1,455 @@
+var _user$project$Main$onKeyDown = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'keydown',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
+};
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Main$itemslfet = function (alltasks) {
+	var l = _elm_lang$core$List$length(alltasks);
+	return _elm_lang$core$Native_Utils.eq(l, 1) ? '1 item left' : A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(l),
+		' items left');
+};
+var _user$project$Main$completedT = function (model) {
+	var isComp = function (task) {
+		var _p0 = task.completed;
+		if (_p0 === true) {
+			return _elm_lang$core$Maybe$Just(task);
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	};
+	return A2(_elm_lang$core$List$filterMap, isComp, model.alltasks);
+};
+var _user$project$Main$uncompletedT = function (model) {
+	var isnotComp = function (task) {
+		var _p1 = task.completed;
+		if (_p1 === true) {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			return _elm_lang$core$Maybe$Just(task);
+		}
+	};
+	return A2(_elm_lang$core$List$filterMap, isnotComp, model.alltasks);
+};
+var _user$project$Main$toggleall = function (model) {
+	var _p2 = model.alltasks;
+	if (_p2.ctor === '[]') {
+		return {ctor: '[]'};
+	} else {
+		return _elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$List$length(
+				_user$project$Main$completedT(model)),
+			_elm_lang$core$List$length(model.alltasks)) ? A2(
+			_elm_lang$core$List$map,
+			function (task) {
+				return _elm_lang$core$Native_Utils.update(
+					task,
+					{completed: false});
+			},
+			model.alltasks) : A2(
+			_elm_lang$core$List$map,
+			function (task) {
+				return _elm_lang$core$Native_Utils.update(
+					task,
+					{completed: true});
+			},
+			model.alltasks);
+	}
+};
+var _user$project$Main$updateT = F2(
+	function (task, model) {
+		var isTask2 = F2(
+			function (i, task) {
+				return _elm_lang$core$Native_Utils.eq(i, task.ide) ? _elm_lang$core$Native_Utils.update(
+					task,
+					{completed: !task.completed}) : task;
+			});
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				alltasks: A2(
+					_elm_lang$core$List$map,
+					isTask2(task.ide),
+					model.alltasks)
+			});
+	});
+var _user$project$Main$deleteT = F2(
+	function (task, model) {
+		var isTask1 = F2(
+			function (i, task) {
+				return _elm_lang$core$Native_Utils.eq(i, task.ide) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(task);
+			});
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				alltasks: A2(
+					_elm_lang$core$List$filterMap,
+					isTask1(task.ide),
+					model.alltasks)
+			});
+	});
+var _user$project$Main$Task = F3(
+	function (a, b, c) {
+		return {task: a, completed: b, ide: c};
+	});
+var _user$project$Main$buildtask = F2(
+	function (task, ide) {
+		return A3(_user$project$Main$Task, task, false, ide);
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'Toggle':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$Main$updateT, _p3._0, model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Delete':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$Main$deleteT, _p3._0, model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'PreparingTask':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							newtask: _elm_lang$core$Maybe$Just(_p3._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewTask':
+				var _p4 = model.newtask;
+				if (_p4.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var newt = A2(_user$project$Main$buildtask, _p4._0, model.nextide);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								alltasks: A2(
+									_elm_lang$core$Basics_ops['++'],
+									model.alltasks,
+									{
+										ctor: '::',
+										_0: newt,
+										_1: {ctor: '[]'}
+									}),
+								newtask: _elm_lang$core$Maybe$Nothing,
+								nextide: model.nextide + 1
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'ChangeView':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{view: _p3._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleAll':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							alltasks: _user$project$Main$toggleall(model)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							alltasks: _user$project$Main$uncompletedT(model)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {alltasks: a, nextide: b, view: c, newtask: d};
+	});
+var _user$project$Main$All = {ctor: 'All'};
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: A4(
+		_user$project$Main$Model,
+		{ctor: '[]'},
+		0,
+		_user$project$Main$All,
+		_elm_lang$core$Maybe$Nothing),
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _user$project$Main$Active = {ctor: 'Active'};
+var _user$project$Main$Completed = {ctor: 'Completed'};
+var _user$project$Main$ClearCompleted = {ctor: 'ClearCompleted'};
+var _user$project$Main$ToggleAll = {ctor: 'ToggleAll'};
+var _user$project$Main$ChangeView = function (a) {
+	return {ctor: 'ChangeView', _0: a};
+};
+var _user$project$Main$Delete = function (a) {
+	return {ctor: 'Delete', _0: a};
+};
+var _user$project$Main$Toggle = function (a) {
+	return {ctor: 'Toggle', _0: a};
+};
+var _user$project$Main$taskview = function (task) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$checked(task.completed),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$Main$Toggle(task)),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(task.task),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$Main$Delete(task)),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('X'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _user$project$Main$tasklist = function (list) {
+	return A2(_elm_lang$core$List$map, _user$project$Main$taskview, list);
+};
+var _user$project$Main$NewTask = {ctor: 'NewTask'};
+var _user$project$Main$PreparingTask = function (a) {
+	return {ctor: 'PreparingTask', _0: a};
+};
+var _user$project$Main$NoOp = {ctor: 'NoOp'};
+var _user$project$Main$enterKey = function ($int) {
+	return _elm_lang$core$Native_Utils.eq($int, 13) ? _user$project$Main$NewTask : _user$project$Main$NoOp;
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('todos'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$placeholder('What needs to be done?'),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$onKeyDown(_user$project$Main$enterKey),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PreparingTask),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(
+										function () {
+											var _p5 = model.newtask;
+											if (_p5.ctor === 'Nothing') {
+												return '';
+											} else {
+												return _p5._0;
+											}
+										}()),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$NewTask),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('New Task'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Main$ChangeView(_user$project$Main$All)),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('All'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(
+										_user$project$Main$ChangeView(_user$project$Main$Completed)),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Completed'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(
+											_user$project$Main$ChangeView(_user$project$Main$Active)),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Active'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$button,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleAll),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('v'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$button,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ClearCompleted),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'Clear completed (',
+														A2(
+															_elm_lang$core$Basics_ops['++'],
+															_elm_lang$core$Basics$toString(
+																_elm_lang$core$List$length(
+																	_user$project$Main$completedT(model))),
+															')'))),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$ul,
+												{ctor: '[]'},
+												function () {
+													var _p6 = model.view;
+													switch (_p6.ctor) {
+														case 'Completed':
+															return _user$project$Main$tasklist(
+																_user$project$Main$completedT(model));
+														case 'Active':
+															return _user$project$Main$tasklist(
+																_user$project$Main$uncompletedT(model));
+														default:
+															return _user$project$Main$tasklist(model.alltasks);
+													}
+												}()),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$h6,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text(
+															_user$project$Main$itemslfet(
+																_user$project$Main$uncompletedT(model))),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$main = _elm_lang$html$Html$program(
+	{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();
