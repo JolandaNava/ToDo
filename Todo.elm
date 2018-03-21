@@ -221,7 +221,7 @@ enterKey int =
 taskview : Task -> Html Msg
 taskview task =
   li []
-    [ input [ type_ "checkbox", onClick (Toggle task)] []
+    [ input [ type_ "checkbox", Html.Attributes.checked task.completed, onClick (Toggle task)] []
     , text task.task
     , button [ onClick (Delete task) ] [ text "X" ]
     ]
