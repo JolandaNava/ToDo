@@ -2,6 +2,8 @@ import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput)
 import Html.Attributes exposing (style, type_, placeholder, value)
 import Json.Decode as Json
+-- Importing the Chore module
+import Chore exposing (Chore)
 
 main =
   Html.program
@@ -11,27 +13,16 @@ main =
     , subscriptions = subscriptions
     }
 
--- TASKS (this might become its own module at some point, but we'll start here)
-
-type alias Task =
-  { task : String
-  , completed : Bool
-  , ide : Int
-  }
-
-buildtask : String -> Int -> Task
-buildtask task ide =
-  Task task False ide
 
 -- this should come in handy to differentiate the different views we want
 type Visibility = Completed | Active | All
 
 -- MODEL
 type alias Model =
-  { alltasks : List Task
-  , nextide : Int
+  { allchores : List Chore
+  , nextid : Int
   , view : Visibility
-  , newtask : Maybe String
+  , newchore : Maybe String
   }
 
 
@@ -42,124 +33,134 @@ init =
 
 
 -- UPDATE
--- helper functions to parse through task list and delete or update the selected task
-deleteT : Task -> Model -> Model
-deleteT task model =
+-- helper functions to parse through chore list and delete or update the selected chore
+deleteT : Chore -> Model -> Model
+deleteT chore model =
   let 
-    isTask1 i task = 
-      if i == task.ide then 
+    isChore1 i chore = 
+      if i == chore.id then 
         Nothing 
       else 
-        Just task 
+        Just chore 
   in
-  { model | alltasks = List.filterMap (isTask1 task.ide) model.alltasks }
+  { model | allchores = List.filterMap (isChore1 chore.id) model.allchores }
 
-updateT : Task -> Model -> Model 
-updateT task model =
+updateT : Chore -> Model -> Model 
+updateT chore model =
   let 
-    isTask2 i task = 
-      if i == task.ide then 
-        { task | completed = not task.completed }
+    isChore2 i chore = 
+      if i == chore.id then 
+        (Chore.update Chore.ToggleChore chore)
       else 
-        task 
+        chore 
   in
-  { model | alltasks = List.map (isTask2 task.ide) model.alltasks }
+  { model | allchores = List.map (isChore2 chore.id) model.allchores }
 
-toggleall : Model -> List Task 
+toggleall : Model -> List Chore 
 toggleall model =
-  case model.alltasks of
+  case model.allchores of
     [] -> 
       []
     _ ->
-      if List.length (completedT model) == List.length model.alltasks then
-        List.map (\task -> {task | completed = False }) model.alltasks
+      if List.length (completedT model) == List.length model.allchores then
+        List.map (\chore -> {chore | completed = False }) model.allchores
       else 
-        List.map (\task -> {task | completed = True }) model.alltasks
+        List.map (\chore -> {chore | completed = True }) model.allchores
 
 type Msg
   = NoOp
-  | PreparingTask String
-  | NewTask
-  | Toggle Task
-  | Delete Task
+  | PreparingChore String
+  | NewChore
+  | Toggle Chore
   | ChangeView Visibility
   | ToggleAll
   | ClearCompleted
+  | ChoreMsg Chore.Msg
 
 -- actual update function 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+    ChoreMsg msg ->
+      ({ model | allchores = (discardEmpty model.allchores)}, Cmd.none)
+
     NoOp ->
       (model, Cmd.none)
 
-    Toggle task ->
-      ( updateT task model , Cmd.none)
-
-    Delete task ->
-      ( deleteT task model , Cmd.none)
+    Toggle chore ->
+      ( updateT chore model , Cmd.none)
     
-    PreparingTask string ->
-      ({ model | newtask = Just string } , Cmd.none)
+    PreparingChore string ->
+      ({ model | newchore = Just string } , Cmd.none)
 
-    NewTask ->
-      case model.newtask of
+    NewChore ->
+      case model.newchore of
         Nothing ->
           (model, Cmd.none)
         Just string ->
           let 
-            newt = buildtask string model.nextide
+            newc = Chore.init string model.nextid
           in
-          ({model | alltasks = model.alltasks ++ [newt], 
-            newtask = Nothing,
-            nextide = model.nextide + 1 } 
+          ({model | allchores = model.allchores ++ [newc], 
+            newchore = Nothing,
+            nextid = model.nextid + 1 } 
           , Cmd.none)
 
     ChangeView visibility ->
           ({ model | view = visibility } , Cmd.none)
     
     ToggleAll ->
-      ({model | alltasks = toggleall model }, Cmd.none)
+      ({model | allchores = toggleall model }, Cmd.none)
 
     ClearCompleted ->
-      ({ model | alltasks = uncompletedT model }, Cmd.none)
+      ({ model | allchores = uncompletedT model }, Cmd.none)
         
 
 
-
 -- VISIBILITY HELPER FUNCTIONS
--- only uncompleted tasks 
-uncompletedT : Model -> List Task
+-- helper function to continuously discard deleted chores 
+discardEmpty : List Chore -> List Chore
+discardEmpty clist = 
+  let 
+    isnothing chore = 
+      case chore.chore of
+        Nothing -> False
+        _ -> True
+  in
+  List.filter isnothing clist
+
+-- only uncompleted chores 
+uncompletedT : Model -> List Chore
 uncompletedT model =
   let 
-    isnotComp task = 
-    case task.completed of
+    isnotComp chore = 
+    case chore.completed of
       True ->
         Nothing 
       False ->
-        Just task 
+        Just chore 
   in
-    List.filterMap isnotComp model.alltasks
+    List.filterMap isnotComp model.allchores
 
 
--- only completed tasks 
-completedT : Model -> List Task
+-- only completed chores 
+completedT : Model -> List Chore
 completedT model =
   let 
-    isComp task = 
-      case task.completed of
+    isComp chore = 
+      case chore.completed of
         True ->
-          Just task 
+          Just chore 
         False -> 
           Nothing 
   in
-    List.filterMap isComp model.alltasks
+    List.filterMap isComp model.allchores
   
 -- create string to display number of items left
 itemslfet : List a -> String
-itemslfet alltasks =
+itemslfet allchores =
   let 
-    l = List.length alltasks 
+    l = List.length allchores 
   in
     if l == 1 then 
       "1 item left"
@@ -180,14 +181,16 @@ view : Model -> Html Msg
 view model =
   div []
     [ h1 [] [ text "todos" ]
-    , input [ placeholder "What needs to be done?"
-            , onKeyDown enterKey
-            , onInput PreparingTask
-            , value 
-              (case model.newtask of 
-                Nothing -> ""
-                Just a -> a)] []
-    , button [ onClick NewTask ] [ text "New Task" ]
+    , input 
+      [ placeholder "What needs to be done?"
+      , onKeyDown enterKey
+      , onInput PreparingChore
+      , value 
+        (case model.newchore of 
+          Nothing -> ""
+          Just a -> a)
+      ] []
+    , button [ onClick NewChore ] [ text "New Chore" ]
     , button [ onClick (ChangeView All) ] [ text "All"]
     , button [ onClick (ChangeView Completed) ] [ text "Completed"]
     , button [ onClick (ChangeView Active) ] [ text "Active"]
@@ -196,16 +199,17 @@ view model =
     , ul [] (
         case model.view of  
           Completed ->
-            tasklist (completedT model)
+            chorelist (completedT model)
           Active -> 
-            tasklist (uncompletedT model)
+            chorelist (uncompletedT model)
           All -> 
-            tasklist model.alltasks
+            chorelist model.allchores
             )
     , h6 [] [text (itemslfet (uncompletedT model))]
     ]
 
 
+-- onKeyDown and enterKey allow to register when "Enter" is pressed and attach a msg to that action
 onKeyDown : (Int -> Msg) -> Attribute Msg
 onKeyDown tagger =
   on "keydown" (Json.map tagger keyCode)
@@ -213,25 +217,20 @@ onKeyDown tagger =
 enterKey : Int -> Msg
 enterKey int = 
   if int == 13 then
-    NewTask
+    NewChore
   else
     NoOp
 
+-- prepares the view for a list of chores
+chorelist : List Chore -> List (Html Msg)
+chorelist list =
+  List.map (Html.map ChoreMsg) (List.map Chore.view list)
+-- I am not sure I fully understand what the ChoreMsg wrapper is doing
 
-taskview : Task -> Html Msg
-taskview task =
-  li []
-    [ input [ type_ "checkbox", Html.Attributes.checked task.completed, onClick (Toggle task)] []
-    , text task.task
-    , button [ onClick (Delete task) ] [ text "X" ]
-    ]
-
-tasklist : List Task -> List (Html Msg)
-tasklist list =
-  List.map taskview list
 
 
 -- NEXT STEPS 
+-- understand how to keep list of chores up-to-date if the Delete command is only possible on the chore module
 -- double-click on a to-do allows you to mofify it
 -- Re-order buttons to be where they should be, kinda
 -- Display buttons only when the actions are possible 

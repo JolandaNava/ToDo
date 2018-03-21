@@ -9,17 +9,17 @@ import Json.Decode as Json
 
 -- MODEL 
 
-type alias Model =
-  { chore : String
+type alias Chore =
+  { chore : Maybe String
   , id : Int
   , completed : Bool
   , changedchore : Maybe String
   }
 
 
-init : String -> Int -> (Model, Cmd Msg)
+init : String -> Int -> Chore
 init chore id =
-  (Model chore id False Nothing , Cmd.none)
+  Chore (Just chore) id False Nothing
 
 
 
@@ -33,57 +33,64 @@ type Msg
     | DeleteChore 
     | ToggleChore 
 
-update : Msg -> Model -> Maybe Model
-update msg model =
+update : Msg -> Chore -> Chore
+update msg chore =
   case msg of
     NoOp ->
-        Just model
+        chore
     
     DeleteChore ->
-        Nothing
+        { chore | chore = Nothing}
     
     StoreChanges text ->
-        Just { model | changedchore = Just text }
+        { chore | changedchore = Just text }
 
     CommitChange ->
-        case model.changedchore of
+        case chore.changedchore of
             Nothing ->
-                Nothing
+                { chore | chore = Nothing}
             Just text ->
-                Just { model | chore = text, changedchore = Nothing}
+                { chore | chore = Just text, changedchore = Nothing}
     
     ToggleChore ->
-        Just { model | completed = not model.completed }
+        { chore | completed = not chore.completed }
     
     RewriteChore ->
-        Just { model | changedchore = Just model.chore }
+        { chore | changedchore = chore.chore }
     
   
 
 
 -- SUBSCRIPTIONS
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions : Chore -> Sub Msg
+subscriptions chore =
     Sub.none
 
 
 -- VIEW
 
-view : Model -> Html Msg
-view model =
+view : Chore -> Html Msg
+view chore =
     li 
     []
     [ div 
         []
         [ input 
             [ type_ "checkbox"
-            , Html.Attributes.checked model.completed
+            , Html.Attributes.checked chore.completed
             , onClick (ToggleChore)
             ] []
         , label 
             [ onDoubleClick RewriteChore]
-            [ text model.chore ]
+            [ text 
+                (case chore.chore of
+                    Nothing -> 
+                        ""
+                    Just text ->
+                        text
+                )
+            ]
         , button 
             [ onClick DeleteChore ] 
             [ text "X" ]
@@ -108,4 +115,5 @@ enterKey msg int =
 
 
 -- NEXT STEPS
--- start re-writing todo to use the chore module instead.
+-- understand how to blend the checklist and field component
+-- implement doubleclick to edit task

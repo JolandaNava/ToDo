@@ -4,59 +4,61 @@ var _user$project$Chore$onKeyDown = function (tagger) {
 		'keydown',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
-var _user$project$Chore$subscriptions = function (model) {
+var _user$project$Chore$subscriptions = function (chore) {
 	return _elm_lang$core$Platform_Sub$none;
 };
 var _user$project$Chore$update = F2(
-	function (msg, model) {
+	function (msg, chore) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'NoOp':
-				return _elm_lang$core$Maybe$Just(model);
+				return chore;
 			case 'DeleteChore':
-				return _elm_lang$core$Maybe$Nothing;
+				return _elm_lang$core$Native_Utils.update(
+					chore,
+					{chore: _elm_lang$core$Maybe$Nothing});
 			case 'StoreChanges':
-				return _elm_lang$core$Maybe$Just(
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							changedchore: _elm_lang$core$Maybe$Just(_p0._0)
-						}));
+				return _elm_lang$core$Native_Utils.update(
+					chore,
+					{
+						changedchore: _elm_lang$core$Maybe$Just(_p0._0)
+					});
 			case 'CommitChange':
-				var _p1 = model.changedchore;
+				var _p1 = chore.changedchore;
 				if (_p1.ctor === 'Nothing') {
-					return _elm_lang$core$Maybe$Nothing;
+					return _elm_lang$core$Native_Utils.update(
+						chore,
+						{chore: _elm_lang$core$Maybe$Nothing});
 				} else {
-					return _elm_lang$core$Maybe$Just(
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{chore: _p1._0, changedchore: _elm_lang$core$Maybe$Nothing}));
+					return _elm_lang$core$Native_Utils.update(
+						chore,
+						{
+							chore: _elm_lang$core$Maybe$Just(_p1._0),
+							changedchore: _elm_lang$core$Maybe$Nothing
+						});
 				}
 			case 'ToggleChore':
-				return _elm_lang$core$Maybe$Just(
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{completed: !model.completed}));
+				return _elm_lang$core$Native_Utils.update(
+					chore,
+					{completed: !chore.completed});
 			default:
-				return _elm_lang$core$Maybe$Just(
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							changedchore: _elm_lang$core$Maybe$Just(model.chore)
-						}));
+				return _elm_lang$core$Native_Utils.update(
+					chore,
+					{changedchore: chore.chore});
 		}
 	});
-var _user$project$Chore$Model = F4(
+var _user$project$Chore$Chore = F4(
 	function (a, b, c, d) {
 		return {chore: a, id: b, completed: c, changedchore: d};
 	});
 var _user$project$Chore$init = F2(
 	function (chore, id) {
-		return {
-			ctor: '_Tuple2',
-			_0: A4(_user$project$Chore$Model, chore, id, false, _elm_lang$core$Maybe$Nothing),
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
+		return A4(
+			_user$project$Chore$Chore,
+			_elm_lang$core$Maybe$Just(chore),
+			id,
+			false,
+			_elm_lang$core$Maybe$Nothing);
 	});
 var _user$project$Chore$ToggleChore = {ctor: 'ToggleChore'};
 var _user$project$Chore$DeleteChore = {ctor: 'DeleteChore'};
@@ -70,7 +72,7 @@ var _user$project$Chore$enterKey = F2(
 	function (msg, $int) {
 		return _elm_lang$core$Native_Utils.eq($int, 13) ? msg : _user$project$Chore$NoOp;
 	});
-var _user$project$Chore$view = function (model) {
+var _user$project$Chore$view = function (chore) {
 	return A2(
 		_elm_lang$html$Html$li,
 		{ctor: '[]'},
@@ -88,7 +90,7 @@ var _user$project$Chore$view = function (model) {
 							_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$checked(model.completed),
+								_0: _elm_lang$html$Html_Attributes$checked(chore.completed),
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Events$onClick(_user$project$Chore$ToggleChore),
@@ -108,7 +110,15 @@ var _user$project$Chore$view = function (model) {
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(model.chore),
+								_0: _elm_lang$html$Html$text(
+									function () {
+										var _p2 = chore.chore;
+										if (_p2.ctor === 'Nothing') {
+											return '';
+										} else {
+											return _p2._0;
+										}
+									}()),
 								_1: {ctor: '[]'}
 							}),
 						_1: {

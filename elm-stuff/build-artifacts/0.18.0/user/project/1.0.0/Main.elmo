@@ -7,149 +7,139 @@ var _user$project$Main$onKeyDown = function (tagger) {
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _user$project$Main$itemslfet = function (alltasks) {
-	var l = _elm_lang$core$List$length(alltasks);
+var _user$project$Main$itemslfet = function (allchores) {
+	var l = _elm_lang$core$List$length(allchores);
 	return _elm_lang$core$Native_Utils.eq(l, 1) ? '1 item left' : A2(
 		_elm_lang$core$Basics_ops['++'],
 		_elm_lang$core$Basics$toString(l),
 		' items left');
 };
 var _user$project$Main$completedT = function (model) {
-	var isComp = function (task) {
-		var _p0 = task.completed;
+	var isComp = function (chore) {
+		var _p0 = chore.completed;
 		if (_p0 === true) {
-			return _elm_lang$core$Maybe$Just(task);
+			return _elm_lang$core$Maybe$Just(chore);
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	};
-	return A2(_elm_lang$core$List$filterMap, isComp, model.alltasks);
+	return A2(_elm_lang$core$List$filterMap, isComp, model.allchores);
 };
 var _user$project$Main$uncompletedT = function (model) {
-	var isnotComp = function (task) {
-		var _p1 = task.completed;
+	var isnotComp = function (chore) {
+		var _p1 = chore.completed;
 		if (_p1 === true) {
 			return _elm_lang$core$Maybe$Nothing;
 		} else {
-			return _elm_lang$core$Maybe$Just(task);
+			return _elm_lang$core$Maybe$Just(chore);
 		}
 	};
-	return A2(_elm_lang$core$List$filterMap, isnotComp, model.alltasks);
+	return A2(_elm_lang$core$List$filterMap, isnotComp, model.allchores);
+};
+var _user$project$Main$discardEmpty = function (clist) {
+	var isnothing = function (chore) {
+		var _p2 = chore.chore;
+		if (_p2.ctor === 'Nothing') {
+			return false;
+		} else {
+			return true;
+		}
+	};
+	return A2(_elm_lang$core$List$filter, isnothing, clist);
 };
 var _user$project$Main$toggleall = function (model) {
-	var _p2 = model.alltasks;
-	if (_p2.ctor === '[]') {
+	var _p3 = model.allchores;
+	if (_p3.ctor === '[]') {
 		return {ctor: '[]'};
 	} else {
 		return _elm_lang$core$Native_Utils.eq(
 			_elm_lang$core$List$length(
 				_user$project$Main$completedT(model)),
-			_elm_lang$core$List$length(model.alltasks)) ? A2(
+			_elm_lang$core$List$length(model.allchores)) ? A2(
 			_elm_lang$core$List$map,
-			function (task) {
+			function (chore) {
 				return _elm_lang$core$Native_Utils.update(
-					task,
+					chore,
 					{completed: false});
 			},
-			model.alltasks) : A2(
+			model.allchores) : A2(
 			_elm_lang$core$List$map,
-			function (task) {
+			function (chore) {
 				return _elm_lang$core$Native_Utils.update(
-					task,
+					chore,
 					{completed: true});
 			},
-			model.alltasks);
+			model.allchores);
 	}
 };
 var _user$project$Main$updateT = F2(
-	function (task, model) {
-		var isTask2 = F2(
-			function (i, task) {
-				return _elm_lang$core$Native_Utils.eq(i, task.ide) ? _elm_lang$core$Native_Utils.update(
-					task,
-					{completed: !task.completed}) : task;
+	function (chore, model) {
+		var isChore2 = F2(
+			function (i, chore) {
+				return _elm_lang$core$Native_Utils.eq(i, chore.id) ? A2(_user$project$Chore$update, _user$project$Chore$ToggleChore, chore) : chore;
 			});
 		return _elm_lang$core$Native_Utils.update(
 			model,
 			{
-				alltasks: A2(
+				allchores: A2(
 					_elm_lang$core$List$map,
-					isTask2(task.ide),
-					model.alltasks)
+					isChore2(chore.id),
+					model.allchores)
 			});
-	});
-var _user$project$Main$deleteT = F2(
-	function (task, model) {
-		var isTask1 = F2(
-			function (i, task) {
-				return _elm_lang$core$Native_Utils.eq(i, task.ide) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(task);
-			});
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				alltasks: A2(
-					_elm_lang$core$List$filterMap,
-					isTask1(task.ide),
-					model.alltasks)
-			});
-	});
-var _user$project$Main$Task = F3(
-	function (a, b, c) {
-		return {task: a, completed: b, ide: c};
-	});
-var _user$project$Main$buildtask = F2(
-	function (task, ide) {
-		return A3(_user$project$Main$Task, task, false, ide);
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p3 = msg;
-		switch (_p3.ctor) {
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'Toggle':
-				return {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$Main$updateT, _p3._0, model),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Delete':
-				return {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$Main$deleteT, _p3._0, model),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PreparingTask':
+		var _p4 = msg;
+		switch (_p4.ctor) {
+			case 'ChoreMsg':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							newtask: _elm_lang$core$Maybe$Just(_p3._0)
+							allchores: _user$project$Main$discardEmpty(model.allchores)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'NewTask':
-				var _p4 = model.newtask;
-				if (_p4.ctor === 'Nothing') {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'Toggle':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$Main$updateT, _p4._0, model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'PreparingChore':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							newchore: _elm_lang$core$Maybe$Just(_p4._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewChore':
+				var _p5 = model.newchore;
+				if (_p5.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var newt = A2(_user$project$Main$buildtask, _p4._0, model.nextide);
+					var newc = A2(_user$project$Chore$init, _p5._0, model.nextid);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								alltasks: A2(
+								allchores: A2(
 									_elm_lang$core$Basics_ops['++'],
-									model.alltasks,
+									model.allchores,
 									{
 										ctor: '::',
-										_0: newt,
+										_0: newc,
 										_1: {ctor: '[]'}
 									}),
-								newtask: _elm_lang$core$Maybe$Nothing,
-								nextide: model.nextide + 1
+								newchore: _elm_lang$core$Maybe$Nothing,
+								nextid: model.nextid + 1
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -159,7 +149,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{view: _p3._0}),
+						{view: _p4._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleAll':
@@ -168,7 +158,7 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							alltasks: _user$project$Main$toggleall(model)
+							allchores: _user$project$Main$toggleall(model)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -178,15 +168,30 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							alltasks: _user$project$Main$uncompletedT(model)
+							allchores: _user$project$Main$uncompletedT(model)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
+var _user$project$Main$deleteT = F2(
+	function (chore, model) {
+		var isChore1 = F2(
+			function (i, chore) {
+				return _elm_lang$core$Native_Utils.eq(i, chore.id) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(chore);
+			});
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				allchores: A2(
+					_elm_lang$core$List$filterMap,
+					isChore1(chore.id),
+					model.allchores)
+			});
+	});
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
-		return {alltasks: a, nextide: b, view: c, newtask: d};
+		return {allchores: a, nextid: b, view: c, newchore: d};
 	});
 var _user$project$Main$All = {ctor: 'All'};
 var _user$project$Main$init = {
@@ -201,73 +206,30 @@ var _user$project$Main$init = {
 };
 var _user$project$Main$Active = {ctor: 'Active'};
 var _user$project$Main$Completed = {ctor: 'Completed'};
+var _user$project$Main$ChoreMsg = function (a) {
+	return {ctor: 'ChoreMsg', _0: a};
+};
+var _user$project$Main$chorelist = function (list) {
+	return A2(
+		_elm_lang$core$List$map,
+		_elm_lang$html$Html$map(_user$project$Main$ChoreMsg),
+		A2(_elm_lang$core$List$map, _user$project$Chore$view, list));
+};
 var _user$project$Main$ClearCompleted = {ctor: 'ClearCompleted'};
 var _user$project$Main$ToggleAll = {ctor: 'ToggleAll'};
 var _user$project$Main$ChangeView = function (a) {
 	return {ctor: 'ChangeView', _0: a};
 };
-var _user$project$Main$Delete = function (a) {
-	return {ctor: 'Delete', _0: a};
-};
 var _user$project$Main$Toggle = function (a) {
 	return {ctor: 'Toggle', _0: a};
 };
-var _user$project$Main$taskview = function (task) {
-	return A2(
-		_elm_lang$html$Html$li,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$input,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$checked(task.completed),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$Main$Toggle(task)),
-							_1: {ctor: '[]'}
-						}
-					}
-				},
-				{ctor: '[]'}),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html$text(task.task),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$button,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$Main$Delete(task)),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('X'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}
-			}
-		});
-};
-var _user$project$Main$tasklist = function (list) {
-	return A2(_elm_lang$core$List$map, _user$project$Main$taskview, list);
-};
-var _user$project$Main$NewTask = {ctor: 'NewTask'};
-var _user$project$Main$PreparingTask = function (a) {
-	return {ctor: 'PreparingTask', _0: a};
+var _user$project$Main$NewChore = {ctor: 'NewChore'};
+var _user$project$Main$PreparingChore = function (a) {
+	return {ctor: 'PreparingChore', _0: a};
 };
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
 var _user$project$Main$enterKey = function ($int) {
-	return _elm_lang$core$Native_Utils.eq($int, 13) ? _user$project$Main$NewTask : _user$project$Main$NoOp;
+	return _elm_lang$core$Native_Utils.eq($int, 13) ? _user$project$Main$NewChore : _user$project$Main$NoOp;
 };
 var _user$project$Main$view = function (model) {
 	return A2(
@@ -295,16 +257,16 @@ var _user$project$Main$view = function (model) {
 							_0: _user$project$Main$onKeyDown(_user$project$Main$enterKey),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PreparingTask),
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PreparingChore),
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$value(
 										function () {
-											var _p5 = model.newtask;
-											if (_p5.ctor === 'Nothing') {
+											var _p6 = model.newchore;
+											if (_p6.ctor === 'Nothing') {
 												return '';
 											} else {
-												return _p5._0;
+												return _p6._0;
 											}
 										}()),
 									_1: {ctor: '[]'}
@@ -319,12 +281,12 @@ var _user$project$Main$view = function (model) {
 						_elm_lang$html$Html$button,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$NewTask),
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$NewChore),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('New Task'),
+							_0: _elm_lang$html$Html$text('New Chore'),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -415,16 +377,16 @@ var _user$project$Main$view = function (model) {
 												_elm_lang$html$Html$ul,
 												{ctor: '[]'},
 												function () {
-													var _p6 = model.view;
-													switch (_p6.ctor) {
+													var _p7 = model.view;
+													switch (_p7.ctor) {
 														case 'Completed':
-															return _user$project$Main$tasklist(
+															return _user$project$Main$chorelist(
 																_user$project$Main$completedT(model));
 														case 'Active':
-															return _user$project$Main$tasklist(
+															return _user$project$Main$chorelist(
 																_user$project$Main$uncompletedT(model));
 														default:
-															return _user$project$Main$tasklist(model.alltasks);
+															return _user$project$Main$chorelist(model.allchores);
 													}
 												}()),
 											_1: {
