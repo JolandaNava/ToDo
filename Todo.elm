@@ -2,6 +2,7 @@ import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput)
 import Html.Attributes exposing (style, type_, placeholder, value)
 import Json.Decode as Json
+
 -- Importing the Chore module
 import Chore exposing (Chore)
 
@@ -45,16 +46,16 @@ deleteT chore model =
   in
   { model | allchores = List.filterMap (isChore1 chore.id) model.allchores }
 
-updateT : Chore -> Model -> Model 
-updateT chore model =
+updateC : Chore -> Model -> List Chore 
+updateC newchore model =
   let 
-    isChore2 i chore = 
-      if i == chore.id then 
-        (Chore.update Chore.ToggleChore chore)
+    isChore2 id chore = 
+      if id == chore.id then 
+        newchore
       else 
         chore 
   in
-  { model | allchores = List.map (isChore2 chore.id) model.allchores }
+    (List.map (isChore2 newchore.id) model.allchores )
 
 toggleall : Model -> List Chore 
 toggleall model =
@@ -71,24 +72,24 @@ type Msg
   = NoOp
   | PreparingChore String
   | NewChore
-  | Toggle Chore
   | ChangeView Visibility
   | ToggleAll
   | ClearCompleted
-  | ChoreMsg Chore.Msg
+  | ChoreMsg Chore Chore.Msg
 
 -- actual update function 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    ChoreMsg msg ->
-      ({ model | allchores = (discardEmpty model.allchores)}, Cmd.none)
+    ChoreMsg chore msg ->
+      let 
+        newc =  Chore.update msg chore
+        newlist = updateC newc model
+      in
+        ({ model | allchores = (discardEmpty newlist)}, Cmd.none)
 
     NoOp ->
       (model, Cmd.none)
-
-    Toggle chore ->
-      ( updateT chore model , Cmd.none)
     
     PreparingChore string ->
       ({ model | newchore = Just string } , Cmd.none)
@@ -221,11 +222,31 @@ enterKey int =
   else
     NoOp
 
+andMap : List a -> List (a -> b) -> List b
+andMap l fl =
+    List.map2 (<|) fl l
+
 -- prepares the view for a list of chores
 chorelist : List Chore -> List (Html Msg)
 chorelist list =
-  List.map (Html.map ChoreMsg) (List.map Chore.view list)
--- I am not sure I fully understand what the ChoreMsg wrapper is doing
+  let
+    listchoresviews = List.map Chore.view list
+    listoffunctions = List.map Html.map (List.map ChoreMsg list)
+  in 
+    andMap listchoresviews listoffunctions
+-- 
+{-- 
+Html.map : (a -> msg) -> Html a -> Html msg
+Html.map : (Chore.Msg -> msg) -> Html Chore.Msg -> Html msg
+
+ChoreMsg : Chore -> (Chore.Msg ->  Msg)
+Chore.view : Chore -> Chore.Msg
+
+((Chore.Msg -> Chore) -> Msg) -> Html (Chore.Msg -> Chore) -> Html Msg
+
+List.map : (a -> b ) -> List a -> List b
+List.map : (_ -> Html Msg) -> List _ -> List (Html Msg) 
+--}
 
 
 

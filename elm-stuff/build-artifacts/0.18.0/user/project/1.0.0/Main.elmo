@@ -1,3 +1,14 @@
+var _user$project$Main$andMap = F2(
+	function (l, fl) {
+		return A3(
+			_elm_lang$core$List$map2,
+			F2(
+				function (x, y) {
+					return x(y);
+				}),
+			fl,
+			l);
+	});
 var _user$project$Main$onKeyDown = function (tagger) {
 	return A2(
 		_elm_lang$html$Html_Events$on,
@@ -72,43 +83,35 @@ var _user$project$Main$toggleall = function (model) {
 			model.allchores);
 	}
 };
-var _user$project$Main$updateT = F2(
-	function (chore, model) {
+var _user$project$Main$updateC = F2(
+	function (newchore, model) {
 		var isChore2 = F2(
-			function (i, chore) {
-				return _elm_lang$core$Native_Utils.eq(i, chore.id) ? A2(_user$project$Chore$update, _user$project$Chore$ToggleChore, chore) : chore;
+			function (id, chore) {
+				return _elm_lang$core$Native_Utils.eq(id, chore.id) ? newchore : chore;
 			});
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				allchores: A2(
-					_elm_lang$core$List$map,
-					isChore2(chore.id),
-					model.allchores)
-			});
+		return A2(
+			_elm_lang$core$List$map,
+			isChore2(newchore.id),
+			model.allchores);
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p4 = msg;
 		switch (_p4.ctor) {
 			case 'ChoreMsg':
+				var newc = A2(_user$project$Chore$update, _p4._1, _p4._0);
+				var newlist = A2(_user$project$Main$updateC, newc, model);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							allchores: _user$project$Main$discardEmpty(model.allchores)
+							allchores: _user$project$Main$discardEmpty(newlist)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'Toggle':
-				return {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$Main$updateT, _p4._0, model),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
 			case 'PreparingChore':
 				return {
 					ctor: '_Tuple2',
@@ -206,22 +209,22 @@ var _user$project$Main$init = {
 };
 var _user$project$Main$Active = {ctor: 'Active'};
 var _user$project$Main$Completed = {ctor: 'Completed'};
-var _user$project$Main$ChoreMsg = function (a) {
-	return {ctor: 'ChoreMsg', _0: a};
-};
+var _user$project$Main$ChoreMsg = F2(
+	function (a, b) {
+		return {ctor: 'ChoreMsg', _0: a, _1: b};
+	});
 var _user$project$Main$chorelist = function (list) {
-	return A2(
+	var listoffunctions = A2(
 		_elm_lang$core$List$map,
-		_elm_lang$html$Html$map(_user$project$Main$ChoreMsg),
-		A2(_elm_lang$core$List$map, _user$project$Chore$view, list));
+		_elm_lang$html$Html$map,
+		A2(_elm_lang$core$List$map, _user$project$Main$ChoreMsg, list));
+	var listchoresviews = A2(_elm_lang$core$List$map, _user$project$Chore$view, list);
+	return A2(_user$project$Main$andMap, listchoresviews, listoffunctions);
 };
 var _user$project$Main$ClearCompleted = {ctor: 'ClearCompleted'};
 var _user$project$Main$ToggleAll = {ctor: 'ToggleAll'};
 var _user$project$Main$ChangeView = function (a) {
 	return {ctor: 'ChangeView', _0: a};
-};
-var _user$project$Main$Toggle = function (a) {
-	return {ctor: 'Toggle', _0: a};
 };
 var _user$project$Main$NewChore = {ctor: 'NewChore'};
 var _user$project$Main$PreparingChore = function (a) {
