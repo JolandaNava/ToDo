@@ -36,32 +36,22 @@ var _user$project$Main$itemslfet = function (allchores) {
 		_elm_lang$core$Basics$toString(l),
 		' items left');
 };
-var _user$project$Main$completedT = function (model) {
-	var isComp = function (chore) {
-		var _p1 = chore.completed;
-		if (_p1 === true) {
-			return _elm_lang$core$Maybe$Just(chore);
-		} else {
-			return _elm_lang$core$Maybe$Nothing;
-		}
-	};
-	return A2(_elm_lang$core$List$filterMap, isComp, model.allchores);
-};
-var _user$project$Main$uncompletedT = function (model) {
-	var isnotComp = function (chore) {
-		var _p2 = chore.completed;
-		if (_p2 === true) {
-			return _elm_lang$core$Maybe$Nothing;
-		} else {
-			return _elm_lang$core$Maybe$Just(chore);
-		}
-	};
-	return A2(_elm_lang$core$List$filterMap, isnotComp, model.allchores);
-};
+var _user$project$Main$onlyCompleted = F2(
+	function (bool, model) {
+		var iscompl = function (chore) {
+			var _p1 = chore.completed;
+			if (_p1 === true) {
+				return bool;
+			} else {
+				return !bool;
+			}
+		};
+		return A2(_elm_lang$core$List$filter, iscompl, model.allchores);
+	});
 var _user$project$Main$discardEmpty = function (clist) {
 	var isnothing = function (chore) {
-		var _p3 = chore.chore;
-		if (_p3.ctor === 'Nothing') {
+		var _p2 = chore.chore;
+		if (_p2.ctor === 'Nothing') {
 			return false;
 		} else {
 			return true;
@@ -70,13 +60,13 @@ var _user$project$Main$discardEmpty = function (clist) {
 	return A2(_elm_lang$core$List$filter, isnothing, clist);
 };
 var _user$project$Main$toggleall = function (model) {
-	var _p4 = model.allchores;
-	if (_p4.ctor === '[]') {
+	var _p3 = model.allchores;
+	if (_p3.ctor === '[]') {
 		return {ctor: '[]'};
 	} else {
 		return _elm_lang$core$Native_Utils.eq(
 			_elm_lang$core$List$length(
-				_user$project$Main$completedT(model)),
+				A2(_user$project$Main$onlyCompleted, true, model)),
 			_elm_lang$core$List$length(model.allchores)) ? A2(
 			_elm_lang$core$List$map,
 			function (chore) {
@@ -107,10 +97,10 @@ var _user$project$Main$updateC = F2(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p5 = msg;
-		switch (_p5.ctor) {
+		var _p4 = msg;
+		switch (_p4.ctor) {
 			case 'ChoreMsg':
-				var newc = A2(_user$project$Chore$update, _p5._1, _p5._0);
+				var newc = A2(_user$project$Chore$update, _p4._1, _p4._0);
 				var newlist = A2(_user$project$Main$updateC, newc, model);
 				return {
 					ctor: '_Tuple2',
@@ -129,16 +119,16 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							newchore: _elm_lang$core$Maybe$Just(_p5._0)
+							newchore: _elm_lang$core$Maybe$Just(_p4._0)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'NewChore':
-				var _p6 = model.newchore;
-				if (_p6.ctor === 'Nothing') {
+				var _p5 = model.newchore;
+				if (_p5.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var newc = A2(_user$project$Chore$init, _p6._0, model.nextid);
+					var newc = A2(_user$project$Chore$init, _p5._0, model.nextid);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -163,7 +153,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{view: _p5._0}),
+						{view: _p4._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleAll':
@@ -182,26 +172,11 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							allchores: _user$project$Main$uncompletedT(model)
+							allchores: A2(_user$project$Main$onlyCompleted, false, model)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
-	});
-var _user$project$Main$deleteT = F2(
-	function (chore, model) {
-		var isChore1 = F2(
-			function (i, chore) {
-				return _elm_lang$core$Native_Utils.eq(i, chore.id) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(chore);
-			});
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				allchores: A2(
-					_elm_lang$core$List$filterMap,
-					isChore1(chore.id),
-					model.allchores)
-			});
 	});
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
@@ -276,11 +251,11 @@ var _user$project$Main$view = function (model) {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$value(
 										function () {
-											var _p7 = model.newchore;
-											if (_p7.ctor === 'Nothing') {
+											var _p6 = model.newchore;
+											if (_p6.ctor === 'Nothing') {
 												return '';
 											} else {
-												return _p7._0;
+												return _p6._0;
 											}
 										}()),
 									_1: {ctor: '[]'}
@@ -381,7 +356,7 @@ var _user$project$Main$view = function (model) {
 															_elm_lang$core$Basics_ops['++'],
 															_elm_lang$core$Basics$toString(
 																_elm_lang$core$List$length(
-																	_user$project$Main$completedT(model))),
+																	A2(_user$project$Main$onlyCompleted, true, model))),
 															')'))),
 												_1: {ctor: '[]'}
 											}),
@@ -391,14 +366,14 @@ var _user$project$Main$view = function (model) {
 												_elm_lang$html$Html$ul,
 												{ctor: '[]'},
 												function () {
-													var _p8 = model.view;
-													switch (_p8.ctor) {
+													var _p7 = model.view;
+													switch (_p7.ctor) {
 														case 'Completed':
 															return _user$project$Main$chorelist(
-																_user$project$Main$completedT(model));
+																A2(_user$project$Main$onlyCompleted, true, model));
 														case 'Active':
 															return _user$project$Main$chorelist(
-																_user$project$Main$uncompletedT(model));
+																A2(_user$project$Main$onlyCompleted, false, model));
 														default:
 															return _user$project$Main$chorelist(model.allchores);
 													}
@@ -426,7 +401,7 @@ var _user$project$Main$view = function (model) {
 															ctor: '::',
 															_0: _elm_lang$html$Html$text(
 																_user$project$Main$itemslfet(
-																	_user$project$Main$uncompletedT(model))),
+																	A2(_user$project$Main$onlyCompleted, false, model))),
 															_1: {ctor: '[]'}
 														}),
 													_1: {ctor: '[]'}

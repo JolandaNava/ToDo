@@ -32,20 +32,8 @@ init =
  ( Model [] 0 All Nothing, Cmd.none)
 
 
-
--- UPDATE
--- helper functions to parse through chore list and delete or update the selected chore
-deleteT : Chore -> Model -> Model
-deleteT chore model =
-  let 
-    isChore1 i chore = 
-      if i == chore.id then 
-        Nothing 
-      else 
-        Just chore 
-  in
-  { model | allchores = List.filterMap (isChore1 chore.id) model.allchores }
-
+-- UPDATE HELPERS
+-- helper function to replace a chore with its updated version in a list of chores
 updateC : Chore -> Model -> List Chore 
 updateC newchore model =
   let 
@@ -57,16 +45,18 @@ updateC newchore model =
   in
     (List.map (isChore2 newchore.id) model.allchores )
 
+-- if all tasks are completed, turns them all to uncomplete, otherwise marks all tasks as completed
 toggleall : Model -> List Chore 
 toggleall model =
   case model.allchores of
     [] -> 
       []
     _ ->
-      if List.length (completedT model) == List.length model.allchores then
+      if List.length (onlyCompleted True model) == List.length model.allchores then
         List.map (\chore -> {chore | completed = False }) model.allchores
       else 
         List.map (\chore -> {chore | completed = True }) model.allchores
+
 
 type Msg
   = NoOp
@@ -77,7 +67,7 @@ type Msg
   | ClearCompleted
   | ChoreMsg Chore Chore.Msg
 
--- actual update function 
+-- UPDATE FUNCTION
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -114,7 +104,7 @@ update msg model =
       ({model | allchores = toggleall model }, Cmd.none)
 
     ClearCompleted ->
-      ({ model | allchores = uncompletedT model }, Cmd.none)
+      ({ model | allchores = (onlyCompleted False model) }, Cmd.none)
         
 
 
@@ -130,33 +120,17 @@ discardEmpty clist =
   in
   List.filter isnothing clist
 
--- only uncompleted chores 
-uncompletedT : Model -> List Chore
-uncompletedT model =
-  let 
-    isnotComp chore = 
-    case chore.completed of
-      True ->
-        Nothing 
-      False ->
-        Just chore 
-  in
-    List.filterMap isnotComp model.allchores
-
-
--- only completed chores 
-completedT : Model -> List Chore
-completedT model =
-  let 
-    isComp chore = 
+-- function to select only completed (bool = true) or uncompleted (bpool = false) chores
+onlyCompleted : Bool -> Model -> List Chore
+onlyCompleted bool model = 
+  let
+    iscompl chore = 
       case chore.completed of
-        True ->
-          Just chore 
-        False -> 
-          Nothing 
+        True -> bool
+        False -> (not bool)
   in
-    List.filterMap isComp model.allchores
-  
+    List.filter iscompl model.allchores
+
 -- create string to display number of items left
 itemslfet : List a -> String
 itemslfet allchores =
@@ -168,6 +142,7 @@ itemslfet allchores =
     else 
       (toString l) ++ (" items left")
 
+-- translates visibility type to string for display
 visibilitystring : Visibility -> String
 visibilitystring vis =
   case vis of
@@ -203,21 +178,23 @@ view model =
     , button [ onClick (ChangeView Completed) ] [ text "Completed"]
     , button [ onClick (ChangeView Active) ] [ text "Active"]
     , button [ onClick ToggleAll ] [ text "v"]
-    , button [ onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (completedT model))) ++ ")" ) ]
+    , button [ onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (onlyCompleted True model))) ++ ")" ) ]
     , ul [] (
         case model.view of  
           Completed ->
-            chorelist (completedT model)
+            chorelist (onlyCompleted True model)
           Active -> 
-            chorelist (uncompletedT model)
+            chorelist (onlyCompleted False model)
           All -> 
             chorelist model.allchores
             )
     , h6 [] [text ("Currently viewing " ++ visibilitystring model.view )]
-    , h6 [] [text (itemslfet (uncompletedT model))]
+    , h6 [] [text (itemslfet (onlyCompleted False model))]
     ]
 
-  
+
+-- VIEW HELPER FUNCTIONS
+
 -- onKeyDown and enterKey allow to register when "Enter" is pressed and attach a msg to that action
 onKeyDown : (Int -> Msg) -> Attribute Msg
 onKeyDown tagger =
@@ -237,7 +214,7 @@ andMap : List a -> List (a -> b) -> List b
 andMap l fl =
     List.map2 (<|) fl l
 
--- prepares the view for a list of chores
+-- prepares the view for a list of chores using Chore.view
 chorelist : List Chore -> List (Html Msg)
 chorelist list =
   let
@@ -255,3 +232,4 @@ chorelist list =
 -- Display buttons only when the actions are possible 
 -- Learn how to point at css sheet from Elm
 -- Learn how to link Elm file to css sheet through main Hthml file 
+-- the actual todo website stores the tasks somwhere (refreshing the page does not delete previous tasks) - how do I implement that?
