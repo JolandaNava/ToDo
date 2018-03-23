@@ -4,13 +4,26 @@ var _user$project$Chore$onKeyDown = function (tagger) {
 		'keydown',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
+var _user$project$Chore$description = function (chore) {
+	var _p0 = chore.changedchore;
+	if (_p0.ctor === 'Nothing') {
+		var _p1 = chore.chore;
+		if (_p1.ctor === 'Nothing') {
+			return '';
+		} else {
+			return _p1._0;
+		}
+	} else {
+		return _p0._0;
+	}
+};
 var _user$project$Chore$subscriptions = function (chore) {
 	return _elm_lang$core$Platform_Sub$none;
 };
 var _user$project$Chore$update = F2(
 	function (msg, chore) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'NoOp':
 				return chore;
 			case 'DeleteChore':
@@ -21,21 +34,27 @@ var _user$project$Chore$update = F2(
 				return _elm_lang$core$Native_Utils.update(
 					chore,
 					{
-						changedchore: _elm_lang$core$Maybe$Just(_p0._0)
+						changedchore: _elm_lang$core$Maybe$Just(_p2._0)
 					});
 			case 'CommitChange':
-				var _p1 = chore.changedchore;
-				if (_p1.ctor === 'Nothing') {
-					return _elm_lang$core$Native_Utils.update(
-						chore,
-						{chore: _elm_lang$core$Maybe$Nothing});
+				var _p3 = chore.changedchore;
+				if (_p3.ctor === 'Nothing') {
+					return chore;
 				} else {
-					return _elm_lang$core$Native_Utils.update(
-						chore,
-						{
-							chore: _elm_lang$core$Maybe$Just(_p1._0),
-							changedchore: _elm_lang$core$Maybe$Nothing
-						});
+					var _p5 = _p3._0;
+					var _p4 = _p5;
+					if (_p4 === '') {
+						return _elm_lang$core$Native_Utils.update(
+							chore,
+							{chore: _elm_lang$core$Maybe$Nothing});
+					} else {
+						return _elm_lang$core$Native_Utils.update(
+							chore,
+							{
+								chore: _elm_lang$core$Maybe$Just(_p5),
+								changedchore: _elm_lang$core$Maybe$Nothing
+							});
+					}
 				}
 			case 'ToggleChore':
 				return _elm_lang$core$Native_Utils.update(
@@ -111,14 +130,7 @@ var _user$project$Chore$view = function (chore) {
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
-									function () {
-										var _p2 = chore.chore;
-										if (_p2.ctor === 'Nothing') {
-											return '';
-										} else {
-											return _p2._0;
-										}
-									}()),
+									_user$project$Chore$description(chore)),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -145,15 +157,20 @@ var _user$project$Chore$view = function (chore) {
 					_elm_lang$html$Html$input,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
+						_0: _elm_lang$html$Html_Attributes$value(
+							_user$project$Chore$description(chore)),
 						_1: {
 							ctor: '::',
-							_0: _user$project$Chore$onKeyDown(
-								_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+							_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
-								_1: {ctor: '[]'}
+								_0: _user$project$Chore$onKeyDown(
+									_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					},

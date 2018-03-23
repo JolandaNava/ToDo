@@ -168,6 +168,13 @@ itemslfet allchores =
     else 
       (toString l) ++ (" items left")
 
+visibilitystring : Visibility -> String
+visibilitystring vis =
+  case vis of
+    Completed -> "completed items"
+    All -> "all items"
+    Active -> "active items"
+
 
 -- SUBSCRIPTIONS
 
@@ -206,10 +213,11 @@ view model =
           All -> 
             chorelist model.allchores
             )
+    , h6 [] [text ("Currently viewing " ++ visibilitystring model.view )]
     , h6 [] [text (itemslfet (uncompletedT model))]
     ]
 
-
+  
 -- onKeyDown and enterKey allow to register when "Enter" is pressed and attach a msg to that action
 onKeyDown : (Int -> Msg) -> Attribute Msg
 onKeyDown tagger =
@@ -222,6 +230,9 @@ enterKey int =
   else
     NoOp
 
+
+-- from List.extra, mapping a list of functions onto a list of elements
+-- used to prepare the chorelist
 andMap : List a -> List (a -> b) -> List b
 andMap l fl =
     List.map2 (<|) fl l
@@ -234,24 +245,11 @@ chorelist list =
     listoffunctions = List.map Html.map (List.map ChoreMsg list)
   in 
     andMap listchoresviews listoffunctions
--- 
-{-- 
-Html.map : (a -> msg) -> Html a -> Html msg
-Html.map : (Chore.Msg -> msg) -> Html Chore.Msg -> Html msg
-
-ChoreMsg : Chore -> (Chore.Msg ->  Msg)
-Chore.view : Chore -> Chore.Msg
-
-((Chore.Msg -> Chore) -> Msg) -> Html (Chore.Msg -> Chore) -> Html Msg
-
-List.map : (a -> b ) -> List a -> List b
-List.map : (_ -> Html Msg) -> List _ -> List (Html Msg) 
---}
 
 
 
 -- NEXT STEPS 
--- understand how to keep list of chores up-to-date if the Delete command is only possible on the chore module
+-- ensure user knows what view they are on (for now I just added a line of text)
 -- double-click on a to-do allows you to mofify it
 -- Re-order buttons to be where they should be, kinda
 -- Display buttons only when the actions are possible 

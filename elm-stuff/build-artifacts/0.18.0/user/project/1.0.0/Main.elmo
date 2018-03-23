@@ -18,6 +18,17 @@ var _user$project$Main$onKeyDown = function (tagger) {
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _user$project$Main$visibilitystring = function (vis) {
+	var _p0 = vis;
+	switch (_p0.ctor) {
+		case 'Completed':
+			return 'completed items';
+		case 'All':
+			return 'all items';
+		default:
+			return 'active items';
+	}
+};
 var _user$project$Main$itemslfet = function (allchores) {
 	var l = _elm_lang$core$List$length(allchores);
 	return _elm_lang$core$Native_Utils.eq(l, 1) ? '1 item left' : A2(
@@ -27,8 +38,8 @@ var _user$project$Main$itemslfet = function (allchores) {
 };
 var _user$project$Main$completedT = function (model) {
 	var isComp = function (chore) {
-		var _p0 = chore.completed;
-		if (_p0 === true) {
+		var _p1 = chore.completed;
+		if (_p1 === true) {
 			return _elm_lang$core$Maybe$Just(chore);
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
@@ -38,8 +49,8 @@ var _user$project$Main$completedT = function (model) {
 };
 var _user$project$Main$uncompletedT = function (model) {
 	var isnotComp = function (chore) {
-		var _p1 = chore.completed;
-		if (_p1 === true) {
+		var _p2 = chore.completed;
+		if (_p2 === true) {
 			return _elm_lang$core$Maybe$Nothing;
 		} else {
 			return _elm_lang$core$Maybe$Just(chore);
@@ -49,8 +60,8 @@ var _user$project$Main$uncompletedT = function (model) {
 };
 var _user$project$Main$discardEmpty = function (clist) {
 	var isnothing = function (chore) {
-		var _p2 = chore.chore;
-		if (_p2.ctor === 'Nothing') {
+		var _p3 = chore.chore;
+		if (_p3.ctor === 'Nothing') {
 			return false;
 		} else {
 			return true;
@@ -59,8 +70,8 @@ var _user$project$Main$discardEmpty = function (clist) {
 	return A2(_elm_lang$core$List$filter, isnothing, clist);
 };
 var _user$project$Main$toggleall = function (model) {
-	var _p3 = model.allchores;
-	if (_p3.ctor === '[]') {
+	var _p4 = model.allchores;
+	if (_p4.ctor === '[]') {
 		return {ctor: '[]'};
 	} else {
 		return _elm_lang$core$Native_Utils.eq(
@@ -96,10 +107,10 @@ var _user$project$Main$updateC = F2(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p4 = msg;
-		switch (_p4.ctor) {
+		var _p5 = msg;
+		switch (_p5.ctor) {
 			case 'ChoreMsg':
-				var newc = A2(_user$project$Chore$update, _p4._1, _p4._0);
+				var newc = A2(_user$project$Chore$update, _p5._1, _p5._0);
 				var newlist = A2(_user$project$Main$updateC, newc, model);
 				return {
 					ctor: '_Tuple2',
@@ -118,16 +129,16 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							newchore: _elm_lang$core$Maybe$Just(_p4._0)
+							newchore: _elm_lang$core$Maybe$Just(_p5._0)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'NewChore':
-				var _p5 = model.newchore;
-				if (_p5.ctor === 'Nothing') {
+				var _p6 = model.newchore;
+				if (_p6.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var newc = A2(_user$project$Chore$init, _p5._0, model.nextid);
+					var newc = A2(_user$project$Chore$init, _p6._0, model.nextid);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -152,7 +163,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{view: _p4._0}),
+						{view: _p5._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleAll':
@@ -265,11 +276,11 @@ var _user$project$Main$view = function (model) {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$value(
 										function () {
-											var _p6 = model.newchore;
-											if (_p6.ctor === 'Nothing') {
+											var _p7 = model.newchore;
+											if (_p7.ctor === 'Nothing') {
 												return '';
 											} else {
-												return _p6._0;
+												return _p7._0;
 											}
 										}()),
 									_1: {ctor: '[]'}
@@ -380,8 +391,8 @@ var _user$project$Main$view = function (model) {
 												_elm_lang$html$Html$ul,
 												{ctor: '[]'},
 												function () {
-													var _p7 = model.view;
-													switch (_p7.ctor) {
+													var _p8 = model.view;
+													switch (_p8.ctor) {
 														case 'Completed':
 															return _user$project$Main$chorelist(
 																_user$project$Main$completedT(model));
@@ -400,11 +411,26 @@ var _user$project$Main$view = function (model) {
 													{
 														ctor: '::',
 														_0: _elm_lang$html$Html$text(
-															_user$project$Main$itemslfet(
-																_user$project$Main$uncompletedT(model))),
+															A2(
+																_elm_lang$core$Basics_ops['++'],
+																'Currently viewing ',
+																_user$project$Main$visibilitystring(model.view))),
 														_1: {ctor: '[]'}
 													}),
-												_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$h6,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(
+																_user$project$Main$itemslfet(
+																	_user$project$Main$uncompletedT(model))),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}

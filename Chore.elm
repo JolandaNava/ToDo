@@ -48,9 +48,11 @@ update msg chore =
     CommitChange ->
         case chore.changedchore of
             Nothing ->
-                { chore | chore = Nothing}
+                chore
             Just text ->
-                { chore | chore = Just text, changedchore = Nothing}
+                case text of
+                    "" ->  { chore | chore = Nothing}
+                    _ -> { chore | chore = Just text, changedchore = Nothing}
     
     ToggleChore ->
         { chore | completed = not chore.completed }
@@ -82,25 +84,30 @@ view chore =
             , onClick (ToggleChore)
             ] []
         , label 
-            [ onDoubleClick RewriteChore]
-            [ text 
-                (case chore.chore of
-                    Nothing -> 
-                        ""
-                    Just text ->
-                        text
-                )
+            [ onDoubleClick RewriteChore ]
+            [ text (description chore)
             ]
         , button 
             [ onClick DeleteChore ] 
             [ text "X" ]
         ] 
     , input 
-        [ onInput StoreChanges
+        [ value (description chore)
+        , onInput StoreChanges
         , onKeyDown (enterKey CommitChange)
         , onBlur CommitChange
         ] []
     ]
+
+
+description : Chore -> String
+description chore =
+    case chore.changedchore of
+            Nothing ->
+                case chore.chore of
+                    Nothing -> ""
+                    Just text -> text
+            Just text -> text 
 
 onKeyDown : (Int -> Msg) -> Attribute Msg
 onKeyDown tagger =
@@ -116,4 +123,4 @@ enterKey msg int =
 
 -- NEXT STEPS
 -- understand how to blend the checklist and field component
--- implement doubleclick to edit task
+-- implement doubleclick to edit task (currently, task can be edited from label whenever)
