@@ -164,6 +164,7 @@ view : Model -> Html Msg
 view model =
   div []
     [ h1 [] [ text "todos" ]
+    , button [ onClick ToggleAll ] [ text "v"]
     , input 
       [ placeholder "What needs to be done?"
       , onKeyDown enterKey
@@ -173,12 +174,6 @@ view model =
           Nothing -> ""
           Just a -> a)
       ] []
-    , button [ onClick NewChore ] [ text "New Chore" ]
-    , button [ onClick (ChangeView All) ] [ text "All"]
-    , button [ onClick (ChangeView Completed) ] [ text "Completed"]
-    , button [ onClick (ChangeView Active) ] [ text "Active"]
-    , button [ onClick ToggleAll ] [ text "v"]
-    , button [ onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (onlyCompleted True model))) ++ ")" ) ]
     , ul [] (
         case model.view of  
           Completed ->
@@ -188,8 +183,12 @@ view model =
           All -> 
             chorelist model.allchores
             )
-    , h6 [] [text ("Currently viewing " ++ visibilitystring model.view )]
-    , h6 [] [text (itemslfet (onlyCompleted False model))]
+    , p [] [text (itemslfet (onlyCompleted False model))]
+    , button [ onClick (ChangeView All) ] [ text "All"]
+    , button [ onClick (ChangeView Active) ] [ text "Active"]
+    , button [ onClick (ChangeView Completed) ] [ text "Completed"]
+    , button [ onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (onlyCompleted True model))) ++ ")" ) ]
+    , p [] [text ("Currently viewing " ++ visibilitystring model.view )]
     ]
 
 
@@ -226,10 +225,7 @@ chorelist list =
 
 
 -- NEXT STEPS 
--- ensure user knows what view they are on (for now I just added a line of text)
--- double-click on a to-do allows you to mofify it
--- Re-order buttons to be where they should be, kinda
--- Display buttons only when the actions are possible 
--- Learn how to point at css sheet from Elm
--- Learn how to link Elm file to css sheet through main Hthml file 
+-- ensure user knows what view they are on (for now I just added a line of text, fix with css by highlighting button)
+-- double-click on a to-do allows you to mofify it (able to modify - I think css needs to be set up to fully implement this)
+-- Display buttons only when the actions are possible (css)
 -- the actual todo website stores the tasks somwhere (refreshing the page does not delete previous tasks) - how do I implement that?

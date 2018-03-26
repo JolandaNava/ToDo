@@ -122,5 +122,5 @@ enterKey msg int =
 
 
 -- NEXT STEPS
--- understand how to blend the checklist and field component
+-- understand how to blend the checklist and field component (probably css)
 -- implement doubleclick to edit task (currently, task can be edited from label whenever)
