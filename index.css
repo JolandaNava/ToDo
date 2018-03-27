@@ -33,8 +33,69 @@ body {
 	margin: 0 auto;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-weight: 300;
+    font-weight: 300;
 }
 
 /* end of stolen code */
 
+h1 {
+    font: 100px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #bd7f7f85;
+    font-weight: 100;
+    text-align: center;
+    padding: 0px;
+    border: 0px;
+    margin : 20px;
+
+}
+
+input, .chore {
+    font: 23px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.4em;
+    background: #ffffff;
+    color: #242424;
+    font-weight: 200;
+    width: 460px;
+    height: 60px;
+    padding: 0px 0px 0px 60px;
+}
+
+::placeholder {
+    font: 23px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.4em;
+    color: #cfcfcf;
+    font-style: italic;
+    font-weight: 200;
+}
+
+ul {
+    list-style: none;
+    font: 23px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #242424;
+    font-weight: 200;
+    padding: 0px;
+    border: 0px;
+    margin : 0px;
+}
+
+.toggle-all {
+    padding: 0px;
+    border: 2px;
+    margin : 0px;
+    background: #861414;
+}
+
+.toggle {
+    width: 60px;
+    height: 60px;
+    padding: 0px;
+    border: 0px;
+    margin : 0px;
+}
+
+/* NEXT STEPS:
+    how do I put both the button and the input field in the same box? (on the Elm side)
+    how do I make the list look as it should
+
+
+*/

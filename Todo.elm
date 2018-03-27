@@ -1,6 +1,6 @@
 import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput)
-import Html.Attributes exposing (style, type_, placeholder, value)
+import Html.Attributes exposing (style, type_, placeholder, value, class)
 import Json.Decode as Json
 
 -- Importing the Chore module
@@ -164,7 +164,7 @@ view : Model -> Html Msg
 view model =
   div []
     [ h1 [] [ text "todos" ]
-    , button [ onClick ToggleAll ] [ text "v"]
+    , button [ class "toggle-all" , onClick ToggleAll ] [ text "v"]
     , input 
       [ placeholder "What needs to be done?"
       , onKeyDown enterKey

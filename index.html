@@ -15,49 +15,17 @@
 </head>
 
 <body>
+	<div id="main"></div>
 <script src="todo.js"></script>
 <script>
 	(function () {
-		// I have no idea what goes in here 
-	} () );
+		document.getElementById('main')
+		Elm.Main.fullscreen()
+	}());
 </script>
 </body>
 </html>
 
-<!--This is a bare index.html file modeled on the todomvc index file to try and put together code and css into a complete page -->
 <!-- NEXT STEPS 
-    learn how to properly fill in the <script> part of this index.html file
-	try running the html and then adjust the css file
--->
-
-
-<!-- reference code for how to fill in the <script> part \
-
-- from the Elm tutorial 
-<div id="main"></div>
-<script src="main.js"></script>
-<script>
-    var node = document.getElementById('main');
-    var app = Elm.Main.embed(node);
-    // Note: if your Elm module is named "MyThing.Root" you
-    // would call "Elm.MyThing.Root.embed(node)" instead.
-</script>
-
-- from the todomvc github file
-<body>
-	<script src="build/elm.js"></script>
-	<script>
-		(function () {
-			var result = localStorage.getItem('elm-todo-model');
-			var savedModel = result ? JSON.parse(result) : null;
-			var todomvc = Elm.Todo.fullscreen(savedModel);
-			todomvc.ports.save.subscribe(function (model) {
-				localStorage.setItem('elm-todo-model', JSON.stringify(model));
-			});
-		}());
-	</script>
-	<script async src="node_modules/todomvc-common/base.js"></script>
-	</body>
-	</html>
-
+    write the css file
 -->

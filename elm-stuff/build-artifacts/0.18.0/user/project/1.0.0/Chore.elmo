@@ -109,11 +109,15 @@ var _user$project$Chore$view = function (chore) {
 							_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$checked(chore.completed),
+								_0: _elm_lang$html$Html_Attributes$class('toggle'),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_user$project$Chore$ToggleChore),
-									_1: {ctor: '[]'}
+									_0: _elm_lang$html$Html_Attributes$checked(chore.completed),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_user$project$Chore$ToggleChore),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						},
@@ -124,8 +128,12 @@ var _user$project$Chore$view = function (chore) {
 							_elm_lang$html$Html$label,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onDoubleClick(_user$project$Chore$RewriteChore),
-								_1: {ctor: '[]'}
+								_0: _elm_lang$html$Html_Attributes$class('chore'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onDoubleClick(_user$project$Chore$RewriteChore),
+									_1: {ctor: '[]'}
+								}
 							},
 							{
 								ctor: '::',
@@ -157,19 +165,23 @@ var _user$project$Chore$view = function (chore) {
 					_elm_lang$html$Html$input,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$value(
-							_user$project$Chore$description(chore)),
+						_0: _elm_lang$html$Html_Attributes$class('chore'),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
+							_0: _elm_lang$html$Html_Attributes$value(
+								_user$project$Chore$description(chore)),
 							_1: {
 								ctor: '::',
-								_0: _user$project$Chore$onKeyDown(
-									_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
-									_1: {ctor: '[]'}
+									_0: _user$project$Chore$onKeyDown(
+										_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}

@@ -2,7 +2,7 @@ module Chore exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput, onDoubleClick, onBlur)
-import Html.Attributes exposing (style, type_, placeholder, value)
+import Html.Attributes exposing (style, type_, placeholder, value, class)
 import Json.Decode as Json
 
 -- The Chore file on the todomvc does not have a main function at all, I am following that
@@ -80,11 +80,12 @@ view chore =
         []
         [ input 
             [ type_ "checkbox"
+            , class "toggle"
             , Html.Attributes.checked chore.completed
             , onClick (ToggleChore)
             ] []
         , label 
-            [ onDoubleClick RewriteChore ]
+            [ class "chore", onDoubleClick RewriteChore ]
             [ text (description chore)
             ]
         , button 
@@ -92,7 +93,8 @@ view chore =
             [ text "X" ]
         ] 
     , input 
-        [ value (description chore)
+        [ class "chore"
+        , value (description chore)
         , onInput StoreChanges
         , onKeyDown (enterKey CommitChange)
         , onBlur CommitChange
