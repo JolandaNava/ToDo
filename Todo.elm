@@ -164,16 +164,19 @@ view : Model -> Html Msg
 view model =
   div []
     [ h1 [] [ text "todos" ]
-    , button [ class "toggle-all" , onClick ToggleAll ] [ text "v"]
-    , input 
-      [ placeholder "What needs to be done?"
-      , onKeyDown enterKey
-      , onInput PreparingChore
-      , value 
-        (case model.newchore of 
-          Nothing -> ""
-          Just a -> a)
-      ] []
+    , div [ class "header" ] 
+        [ button [ class "toggle-all" , onClick ToggleAll ] []
+        , input 
+          [ class "newchore"
+          , placeholder "What needs to be done?"
+          , onKeyDown enterKey
+          , onInput PreparingChore
+          , value 
+            (case model.newchore of 
+              Nothing -> ""
+              Just a -> a)
+          ] []
+        ]
     , ul [] (
         case model.view of  
           Completed ->

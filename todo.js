@@ -8361,7 +8361,11 @@ var _user$project$Chore$view = function (chore) {
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$div,
-				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('chore'),
+					_1: {ctor: '[]'}
+				},
 				{
 					ctor: '::',
 					_0: A2(
@@ -8390,12 +8394,8 @@ var _user$project$Chore$view = function (chore) {
 							_elm_lang$html$Html$label,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('chore'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onDoubleClick(_user$project$Chore$RewriteChore),
-									_1: {ctor: '[]'}
-								}
+								_0: _elm_lang$html$Html_Events$onDoubleClick(_user$project$Chore$RewriteChore),
+								_1: {ctor: '[]'}
 							},
 							{
 								ctor: '::',
@@ -8414,7 +8414,7 @@ var _user$project$Chore$view = function (chore) {
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('X'),
+									_0: _elm_lang$html$Html$text('x'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -8424,31 +8424,38 @@ var _user$project$Chore$view = function (chore) {
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$input,
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('chore'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$value(
-								_user$project$Chore$description(chore)),
-							_1: {
+						_0: _elm_lang$html$Html_Attributes$class('editing-chore'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$input,
+							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
+								_0: _elm_lang$html$Html_Attributes$value(
+									_user$project$Chore$description(chore)),
 								_1: {
 									ctor: '::',
-									_0: _user$project$Chore$onKeyDown(
-										_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+									_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
-										_1: {ctor: '[]'}
+										_0: _user$project$Chore$onKeyDown(
+											_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
+											_1: {ctor: '[]'}
+										}
 									}
 								}
-							}
-						}
-					},
-					{ctor: '[]'}),
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
 				_1: {ctor: '[]'}
 			}
 		});
@@ -8693,79 +8700,106 @@ var _user$project$Main$view = function (model) {
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$button,
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('toggle-all'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleAll),
-							_1: {ctor: '[]'}
-						}
+						_0: _elm_lang$html$Html_Attributes$class('header'),
+						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('v'),
-						_1: {ctor: '[]'}
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('toggle-all'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleAll),
+									_1: {ctor: '[]'}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$input,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('newchore'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$placeholder('What needs to be done?'),
+										_1: {
+											ctor: '::',
+											_0: _user$project$Main$onKeyDown(_user$project$Main$enterKey),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PreparingChore),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$value(
+														function () {
+															var _p6 = model.newchore;
+															if (_p6.ctor === 'Nothing') {
+																return '';
+															} else {
+																return _p6._0;
+															}
+														}()),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
 					}),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$input,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$placeholder('What needs to be done?'),
-							_1: {
-								ctor: '::',
-								_0: _user$project$Main$onKeyDown(_user$project$Main$enterKey),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PreparingChore),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$value(
-											function () {
-												var _p6 = model.newchore;
-												if (_p6.ctor === 'Nothing') {
-													return '';
-												} else {
-													return _p6._0;
-												}
-											}()),
-										_1: {ctor: '[]'}
-									}
-								}
+						_elm_lang$html$Html$ul,
+						{ctor: '[]'},
+						function () {
+							var _p7 = model.view;
+							switch (_p7.ctor) {
+								case 'Completed':
+									return _user$project$Main$chorelist(
+										A2(_user$project$Main$onlyCompleted, true, model));
+								case 'Active':
+									return _user$project$Main$chorelist(
+										A2(_user$project$Main$onlyCompleted, false, model));
+								default:
+									return _user$project$Main$chorelist(model.allchores);
 							}
-						},
-						{ctor: '[]'}),
+						}()),
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$ul,
+							_elm_lang$html$Html$p,
 							{ctor: '[]'},
-							function () {
-								var _p7 = model.view;
-								switch (_p7.ctor) {
-									case 'Completed':
-										return _user$project$Main$chorelist(
-											A2(_user$project$Main$onlyCompleted, true, model));
-									case 'Active':
-										return _user$project$Main$chorelist(
-											A2(_user$project$Main$onlyCompleted, false, model));
-									default:
-										return _user$project$Main$chorelist(model.allchores);
-								}
-							}()),
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_user$project$Main$itemslfet(
+										A2(_user$project$Main$onlyCompleted, false, model))),
+								_1: {ctor: '[]'}
+							}),
 						_1: {
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$p,
-								{ctor: '[]'},
+								_elm_lang$html$Html$button,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text(
-										_user$project$Main$itemslfet(
-											A2(_user$project$Main$onlyCompleted, false, model))),
+									_0: _elm_lang$html$Html_Events$onClick(
+										_user$project$Main$ChangeView(_user$project$Main$All)),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('All'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -8775,12 +8809,12 @@ var _user$project$Main$view = function (model) {
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html_Events$onClick(
-											_user$project$Main$ChangeView(_user$project$Main$All)),
+											_user$project$Main$ChangeView(_user$project$Main$Active)),
 										_1: {ctor: '[]'}
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('All'),
+										_0: _elm_lang$html$Html$text('Active'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -8790,12 +8824,12 @@ var _user$project$Main$view = function (model) {
 										{
 											ctor: '::',
 											_0: _elm_lang$html$Html_Events$onClick(
-												_user$project$Main$ChangeView(_user$project$Main$Active)),
+												_user$project$Main$ChangeView(_user$project$Main$Completed)),
 											_1: {ctor: '[]'}
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Active'),
+											_0: _elm_lang$html$Html$text('Completed'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -8804,54 +8838,38 @@ var _user$project$Main$view = function (model) {
 											_elm_lang$html$Html$button,
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onClick(
-													_user$project$Main$ChangeView(_user$project$Main$Completed)),
+												_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ClearCompleted),
 												_1: {ctor: '[]'}
 											},
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html$text('Completed'),
+												_0: _elm_lang$html$Html$text(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'Clear completed (',
+														A2(
+															_elm_lang$core$Basics_ops['++'],
+															_elm_lang$core$Basics$toString(
+																_elm_lang$core$List$length(
+																	A2(_user$project$Main$onlyCompleted, true, model))),
+															')'))),
 												_1: {ctor: '[]'}
 											}),
 										_1: {
 											ctor: '::',
 											_0: A2(
-												_elm_lang$html$Html$button,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ClearCompleted),
-													_1: {ctor: '[]'}
-												},
+												_elm_lang$html$Html$p,
+												{ctor: '[]'},
 												{
 													ctor: '::',
 													_0: _elm_lang$html$Html$text(
 														A2(
 															_elm_lang$core$Basics_ops['++'],
-															'Clear completed (',
-															A2(
-																_elm_lang$core$Basics_ops['++'],
-																_elm_lang$core$Basics$toString(
-																	_elm_lang$core$List$length(
-																		A2(_user$project$Main$onlyCompleted, true, model))),
-																')'))),
+															'Currently viewing ',
+															_user$project$Main$visibilitystring(model.view))),
 													_1: {ctor: '[]'}
 												}),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$p,
-													{ctor: '[]'},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text(
-															A2(
-																_elm_lang$core$Basics_ops['++'],
-																'Currently viewing ',
-																_user$project$Main$visibilitystring(model.view))),
-														_1: {ctor: '[]'}
-													}),
-												_1: {ctor: '[]'}
-											}
+											_1: {ctor: '[]'}
 										}
 									}
 								}

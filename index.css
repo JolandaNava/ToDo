@@ -23,6 +23,7 @@ button {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+
 body {
 	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	line-height: 1.4em;
@@ -40,7 +41,7 @@ body {
 
 h1 {
     font: 100px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #bd7f7f85;
+    color: #e9d9d9;
     font-weight: 100;
     text-align: center;
     padding: 0px;
@@ -49,21 +50,10 @@ h1 {
 
 }
 
-input, .chore {
-    font: 23px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    line-height: 1.4em;
-    background: #ffffff;
-    color: #242424;
-    font-weight: 200;
-    width: 460px;
-    height: 60px;
-    padding: 0px 0px 0px 60px;
-}
-
 ::placeholder {
     font: 23px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: 1.4em;
-    color: #cfcfcf;
+    color: #E6E6E6;
     font-style: italic;
     font-weight: 200;
 }
@@ -78,12 +68,6 @@ ul {
     margin : 0px;
 }
 
-.toggle-all {
-    padding: 0px;
-    border: 2px;
-    margin : 0px;
-    background: #861414;
-}
 
 .toggle {
     width: 60px;
@@ -93,9 +77,116 @@ ul {
     margin : 0px;
 }
 
-/* NEXT STEPS:
-    how do I put both the button and the input field in the same box? (on the Elm side)
-    how do I make the list look as it should
+.header, .chore, .editing-chore {
+    background: #ffffff;
+    width: 460px;
+    height: 60px;
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    box-shadow: 2px 2px 5px #ceccccad, -2px 2px 5px #ceccccad;
+}
 
+.newchore, .editing-chore input {
+    font: 23px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.4em;
+    background: #ffffff;
+    color: #242424;
+    font-weight: 200;
+    width: 400px;
+    height: 60px;
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    float: right;
+    
+}
+
+.toggle-all {
+    padding: 0px;
+    border: 0px;
+    margin : 0px;
+    background: #ffffff;
+    width: 12px;
+    height: 12px;
+    position: relative;
+    left: 20px;
+    top: 12px;
+    border: solid #737373;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg) skewX(-5deg) skewY(-5deg);
+}
+/* To implement: button is normally lighter, becomes dark only when all chores are checked */
+
+
+.chore label {
+    line-height: 1.4em;
+    width: 340px;
+    max-width: 340px;
+    height: 30px;
+    padding: 15px 0px;
+    border: 0px;
+    margin: 0px;
+    position: relative;
+    left: 0px;
+    top: 15px;
+}
+
+/* this renders the original checkbox invisible, so we can add a new version*/
+.toggle {
+    width: 60px;
+    height: 60px;
+    padding: 12px 0px 0px 12px;
+    border: 0px;
+    margin: 0px;
+    position: relative;
+    top: 0px;
+    float: left ;
+	border: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+/* the following two declarations are from the todomvc file.  
+I know they are defining a picture in SVG so I can use it as the checkbox, 
+however, I am not sure what the xmlns tag is doing, is it fetching the svg language?
+*/
+.toggle:after {
+	content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -10 135 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#ededed" stroke-width="3"/></svg>');
+}
+
+.toggle:checked:after {
+	content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -10 135 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#bddad5" stroke-width="3"/><path fill="#5dc2af" d="M72 25L42 71 27 56l-4 4 20 20 34-52z"/></svg>');
+}
+
+.chore button {
+    width: 60px;
+    height: 60px;
+    float: right;
+    color: #cc9a9a;
+}
+ 
+
+
+
+
+/* NEXT STEPS:
+    chore / editing-chore should display appropriately (instert a if/then clause on the elm side for the view?)
+    created footer (in elm)
+    display buttons appropriately in footer
+        style buttons
+        use flex to flush them to right positions
+    display buttons only when action is possible (elm side)
+    toggle-all button to change color when all chores are checked
+    delete button to be a real x not text
+    delete button to appear only when mouse hovers on it
+    fix shadows around boxes
+    chore height to change is text is long and wraps
+    chore text to wrap when its max lenght is reached (now goes further) 
+
+    when a view is selected the corresponding button is highlighted
 
 */

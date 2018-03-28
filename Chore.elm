@@ -77,7 +77,7 @@ view chore =
     li 
     []
     [ div 
-        []
+        [class "chore"]
         [ input 
             [ type_ "checkbox"
             , class "toggle"
@@ -85,20 +85,21 @@ view chore =
             , onClick (ToggleChore)
             ] []
         , label 
-            [ class "chore", onDoubleClick RewriteChore ]
+            [ onDoubleClick RewriteChore ]
             [ text (description chore)
             ]
         , button 
             [ onClick DeleteChore ] 
-            [ text "X" ]
+            [ text "x" ]
         ] 
-    , input 
-        [ class "chore"
-        , value (description chore)
-        , onInput StoreChanges
-        , onKeyDown (enterKey CommitChange)
-        , onBlur CommitChange
-        ] []
+    , div [class "editing-chore"]
+        [ input 
+            [ value (description chore)
+            , onInput StoreChanges
+            , onKeyDown (enterKey CommitChange)
+            , onBlur CommitChange
+            ] []
+        ]
     ]
 
 
