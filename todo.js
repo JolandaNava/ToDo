@@ -8414,7 +8414,7 @@ var _user$project$Chore$view = function (chore) {
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('x'),
+									_0: _elm_lang$html$Html$text('×'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -8778,43 +8778,26 @@ var _user$project$Main$view = function (model) {
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$p,
-							{ctor: '[]'},
+							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									_user$project$Main$itemslfet(
-										A2(_user$project$Main$onlyCompleted, false, model))),
+								_0: _elm_lang$html$Html_Attributes$class('footer'),
 								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$button,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(
-										_user$project$Main$ChangeView(_user$project$Main$All)),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('All'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {
+							},
+							{
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$button,
+									_elm_lang$html$Html$p,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onClick(
-											_user$project$Main$ChangeView(_user$project$Main$Active)),
+										_0: _elm_lang$html$Html_Attributes$class('items-left '),
 										_1: {ctor: '[]'}
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('Active'),
+										_0: _elm_lang$html$Html$text(
+											_user$project$Main$itemslfet(
+												A2(_user$project$Main$onlyCompleted, false, model))),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -8823,13 +8806,17 @@ var _user$project$Main$view = function (model) {
 										_elm_lang$html$Html$button,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onClick(
-												_user$project$Main$ChangeView(_user$project$Main$Completed)),
-											_1: {ctor: '[]'}
+											_0: _elm_lang$html$Html_Attributes$class('view'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onClick(
+													_user$project$Main$ChangeView(_user$project$Main$All)),
+												_1: {ctor: '[]'}
+											}
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Completed'),
+											_0: _elm_lang$html$Html$text('All'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -8838,42 +8825,86 @@ var _user$project$Main$view = function (model) {
 											_elm_lang$html$Html$button,
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ClearCompleted),
-												_1: {ctor: '[]'}
+												_0: _elm_lang$html$Html_Attributes$class('view'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(
+														_user$project$Main$ChangeView(_user$project$Main$Active)),
+													_1: {ctor: '[]'}
+												}
 											},
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html$text(
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'Clear completed (',
-														A2(
-															_elm_lang$core$Basics_ops['++'],
-															_elm_lang$core$Basics$toString(
-																_elm_lang$core$List$length(
-																	A2(_user$project$Main$onlyCompleted, true, model))),
-															')'))),
+												_0: _elm_lang$html$Html$text('Active'),
 												_1: {ctor: '[]'}
 											}),
 										_1: {
 											ctor: '::',
 											_0: A2(
-												_elm_lang$html$Html$p,
-												{ctor: '[]'},
+												_elm_lang$html$Html$button,
 												{
 													ctor: '::',
-													_0: _elm_lang$html$Html$text(
-														A2(
-															_elm_lang$core$Basics_ops['++'],
-															'Currently viewing ',
-															_user$project$Main$visibilitystring(model.view))),
+													_0: _elm_lang$html$Html_Attributes$class('view'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Events$onClick(
+															_user$project$Main$ChangeView(_user$project$Main$Completed)),
+														_1: {ctor: '[]'}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Completed'),
 													_1: {ctor: '[]'}
 												}),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$button,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('clear-completed'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ClearCompleted),
+															_1: {ctor: '[]'}
+														}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text(
+															A2(
+																_elm_lang$core$Basics_ops['++'],
+																'Clear completed (',
+																A2(
+																	_elm_lang$core$Basics_ops['++'],
+																	_elm_lang$core$Basics$toString(
+																		_elm_lang$core$List$length(
+																			A2(_user$project$Main$onlyCompleted, true, model))),
+																	')'))),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}
-							}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'Currently viewing ',
+											_user$project$Main$visibilitystring(model.view))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
 						}
 					}
 				}

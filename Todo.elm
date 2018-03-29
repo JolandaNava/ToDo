@@ -186,11 +186,13 @@ view model =
           All -> 
             chorelist model.allchores
             )
-    , p [] [text (itemslfet (onlyCompleted False model))]
-    , button [ onClick (ChangeView All) ] [ text "All"]
-    , button [ onClick (ChangeView Active) ] [ text "Active"]
-    , button [ onClick (ChangeView Completed) ] [ text "Completed"]
-    , button [ onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (onlyCompleted True model))) ++ ")" ) ]
+    , div [ class "footer" ]
+      [ p [class "items-left "] [text (itemslfet (onlyCompleted False model))]
+      , button [ class "view", onClick (ChangeView All) ] [ text "All"]
+      , button [ class "view", onClick (ChangeView Active) ] [ text "Active"]
+      , button [ class "view", onClick (ChangeView Completed) ] [ text "Completed"]
+      , button [ class "clear-completed", onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (onlyCompleted True model))) ++ ")" ) ]
+      ]
     , p [] [text ("Currently viewing " ++ visibilitystring model.view )]
     ]
 

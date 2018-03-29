@@ -90,7 +90,7 @@ view chore =
             ]
         , button 
             [ onClick DeleteChore ] 
-            [ text "x" ]
+            [ text "×" ]
         ] 
     , div [class "editing-chore"]
         [ input 

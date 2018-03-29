@@ -23,6 +23,9 @@ button {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+input:focus, button:focus {
+    outline: none;
+}
 
 body {
 	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -77,14 +80,25 @@ ul {
     margin : 0px;
 }
 
-.header, .chore, .editing-chore {
+.header, .chore, .editing-chore, .footer {
     background: #ffffff;
-    width: 460px;
+    width: 560px;
     height: 60px;
     padding: 0px;
     border: 0px;
     margin: 0px;
+}
+
+.chore, .footer , .editing-chore {
     box-shadow: 2px 2px 5px #ceccccad, -2px 2px 5px #ceccccad;
+}
+
+.header {
+    box-shadow: 2px 2px 5px #ceccccad, -2px 2px 5px #ceccccad, 0px -1px 2px #ceccccad inset;
+}
+
+.editing-chore input {
+    box-shadow: 1px 1px 3px #a39999 inset, -1px -1px 3px #a39999 inset, 1px 1px #a39999 inset, -1px -1px #a39999 inset;
 }
 
 .newchore, .editing-chore input {
@@ -93,14 +107,25 @@ ul {
     background: #ffffff;
     color: #242424;
     font-weight: 200;
-    width: 400px;
-    height: 60px;
+    float: right;
+    width: 500px;
+}
+
+.newchore {
+    vertical-align: middle;
+    height: 55px;
     padding: 0px;
     border: 0px;
     margin: 0px;
-    float: right;
-    
 }
+
+.editing-chore input {
+    height: 60px;
+    padding: 0px 0px 0px 15px;
+    border: 0px;
+    margin: 0px;
+}
+
 
 .toggle-all {
     padding: 0px;
@@ -124,8 +149,8 @@ ul {
 
 .chore label {
     line-height: 1.4em;
-    width: 340px;
-    max-width: 340px;
+    width: 440px;
+    max-width: 440px;
     height: 30px;
     padding: 15px 0px;
     border: 0px;
@@ -162,31 +187,72 @@ however, I am not sure what the xmlns tag is doing, is it fetching the svg langu
 	content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -10 135 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#bddad5" stroke-width="3"/><path fill="#5dc2af" d="M72 25L42 71 27 56l-4 4 20 20 34-52z"/></svg>');
 }
 
+/* delete chore, x button*/
 .chore button {
     width: 60px;
     height: 60px;
     float: right;
-    color: #cc9a9a;
+    font: 30px;
+    color: transparent;
 }
- 
+
+li:hover .chore button {
+    color: #851e1e;
+}
 
 
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+}
+
+.items-left {
+    width: 90px;
+    height: 50px;
+    margin: 0px 40px 0px 20px;
+    text-align: left;
+    position: relative;
+    left: 0px;
+    top: 16px;
+}
+
+.view {
+    height: 30px;
+    padding: 0px 7px 0px 7px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+
+.view:hover {
+    border: 1px solid #ECD7D7;
+}
+
+/* the 'selected' pseudo argument does not look like it's working right now - i am not sure why yet */
+.view:selected {
+    background: green;
+}
+
+.clear-completed {
+    width: 120px;
+    height: 30px;
+    margin: 0px 20px 0px 30px;
+}
+
+.clear-completed:hover {
+    text-decoration: underline;
+}
 
 
 /* NEXT STEPS:
     chore / editing-chore should display appropriately (instert a if/then clause on the elm side for the view?)
-    created footer (in elm)
-    display buttons appropriately in footer
-        style buttons
-        use flex to flush them to right positions
     display buttons only when action is possible (elm side)
     toggle-all button to change color when all chores are checked
-    delete button to be a real x not text
-    delete button to appear only when mouse hovers on it
-    fix shadows around boxes
+    ~ delete button to be a real x not text
+    ~ fix shadows around boxes
     chore height to change is text is long and wraps
     chore text to wrap when its max lenght is reached (now goes further) 
-
     when a view is selected the corresponding button is highlighted
 
 */
