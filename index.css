@@ -89,7 +89,7 @@ ul {
     margin: 0px;
 }
 
-.chore, .footer , .editing-chore {
+.chore, .editing-chore {
     box-shadow: 2px 2px 5px #ceccccad, -2px 2px 5px #ceccccad;
 }
 
@@ -137,16 +137,21 @@ ul {
     position: relative;
     left: 20px;
     top: 12px;
-    border: solid #737373;
+    border: solid #E6E6E6;
     border-width: 0 4px 4px 0;
     display: inline-block;
     padding: 4px;
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg) skewX(-5deg) skewY(-5deg);
 }
-/* To implement: button is normally lighter, becomes dark only when all chores are checked */
 
+.toggle-all.alldone {
+    border: solid #737373;
+    border-width: 0 4px 4px 0;
+}
 
+/* Having troubles making the entire area of this label clickable*/
+/* I am also not sure how to grow the label as the text grows */
 .chore label {
     line-height: 1.4em;
     width: 440px;
@@ -159,6 +164,12 @@ ul {
     left: 0px;
     top: 15px;
 }
+
+.chore.completed label {
+    color: #D9D9D9;
+    text-decoration: line-through #D9D9D9;
+}
+
 
 /* this renders the original checkbox invisible, so we can add a new version*/
 .toggle {
@@ -187,6 +198,7 @@ however, I am not sure what the xmlns tag is doing, is it fetching the svg langu
 	content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -10 135 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#bddad5" stroke-width="3"/><path fill="#5dc2af" d="M72 25L42 71 27 56l-4 4 20 20 34-52z"/></svg>');
 }
 
+
 /* delete chore, x button*/
 .chore button {
     width: 60px;
@@ -206,7 +218,15 @@ li:hover .chore button {
     justify-content: space-between;
     align-items: center;
     height: 50px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 
+                0 8px 0 -3px #f6f6f6, 
+                0 9px 1px -3px rgba(0, 0, 0, 0.2), 
+                0 16px 0 -6px #f6f6f6, 
+                0 17px 2px -6px rgba(0, 0, 0, 0.2),
+                2px 2px 5px #ceccccad, 
+                -2px 2px 5px #ceccccad;
 }
+
 
 .items-left {
     width: 90px;
@@ -218,20 +238,23 @@ li:hover .chore button {
     top: 16px;
 }
 
-.view {
+.footer button:not(.clear-completed){
     height: 30px;
     padding: 0px 7px 0px 7px;
     border: 1px solid transparent;
     border-radius: 3px;
 }
 
-.view:hover {
+.footer button:hover:not(.clear-completed) {
+    border: 1px solid #f8e2e2;
+}
+
+.footer button.selected {
     border: 1px solid #ECD7D7;
 }
 
-/* the 'selected' pseudo argument does not look like it's working right now - i am not sure why yet */
-.view:selected {
-    background: green;
+.footer button.selected:hover {
+    border: 1px solid #ECD7D7;
 }
 
 .clear-completed {
@@ -244,15 +267,15 @@ li:hover .chore button {
     text-decoration: underline;
 }
 
+.clear-completed.hide {
+    visibility: hidden;
+}
+
 
 /* NEXT STEPS:
-    chore / editing-chore should display appropriately (instert a if/then clause on the elm side for the view?)
-    display buttons only when action is possible (elm side)
-    toggle-all button to change color when all chores are checked
-    ~ delete button to be a real x not text
-    ~ fix shadows around boxes
+    make entire chore lable clickable
     chore height to change is text is long and wraps
-    chore text to wrap when its max lenght is reached (now goes further) 
-    when a view is selected the corresponding button is highlighted
-
+    chore text to wrap when its max lenght is reached (now goes further and displaces the x button)
+    footer should not display if there are no chores (currently trying to use "hidden" attribute on the elm side)
 */
+

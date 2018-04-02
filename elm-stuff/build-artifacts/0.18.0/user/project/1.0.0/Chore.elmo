@@ -92,6 +92,14 @@ var _user$project$Chore$enterKey = F2(
 		return _elm_lang$core$Native_Utils.eq($int, 13) ? msg : _user$project$Chore$NoOp;
 	});
 var _user$project$Chore$view = function (chore) {
+	var isbeingedited = function () {
+		var _p6 = chore.changedchore;
+		if (_p6.ctor === 'Nothing') {
+			return false;
+		} else {
+			return true;
+		}
+	}();
 	return A2(
 		_elm_lang$html$Html$li,
 		{ctor: '[]'},
@@ -101,8 +109,21 @@ var _user$project$Chore$view = function (chore) {
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('chore'),
-					_1: {ctor: '[]'}
+					_0: _elm_lang$html$Html_Attributes$classList(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'chore', _1: true},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'completed', _1: chore.completed},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$hidden(isbeingedited),
+						_1: {ctor: '[]'}
+					}
 				},
 				{
 					ctor: '::',
@@ -166,7 +187,11 @@ var _user$project$Chore$view = function (chore) {
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$class('editing-chore'),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$hidden(!isbeingedited),
+							_1: {ctor: '[]'}
+						}
 					},
 					{
 						ctor: '::',

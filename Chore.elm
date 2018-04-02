@@ -2,7 +2,7 @@ module Chore exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput, onDoubleClick, onBlur)
-import Html.Attributes exposing (style, type_, placeholder, value, class)
+import Html.Attributes exposing (style, type_, placeholder, value, class, hidden, classList)
 import Json.Decode as Json
 
 -- The Chore file on the todomvc does not have a main function at all, I am following that
@@ -74,10 +74,17 @@ subscriptions chore =
 
 view : Chore -> Html Msg
 view chore =
+    let
+        isbeingedited = case chore.changedchore of
+            Nothing -> False
+            Just text -> True
+    in
     li 
     []
     [ div 
-        [class "chore"]
+        [ classList [("chore", True), ("completed", chore.completed)]
+        , hidden isbeingedited
+        ]
         [ input 
             [ type_ "checkbox"
             , class "toggle"
@@ -92,7 +99,9 @@ view chore =
             [ onClick DeleteChore ] 
             [ text "×" ]
         ] 
-    , div [class "editing-chore"]
+    , div 
+        [ class "editing-chore"
+        , hidden (not isbeingedited)]
         [ input 
             [ value (description chore)
             , onInput StoreChanges
@@ -125,5 +134,4 @@ enterKey msg int =
 
 
 -- NEXT STEPS
--- understand how to blend the checklist and field component (probably css)
--- implement doubleclick to edit task (currently, task can be edited from label whenever)
+-- onBlur CommitChange command seems to not be working

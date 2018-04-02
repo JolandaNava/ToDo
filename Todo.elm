@@ -1,6 +1,6 @@
 import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput)
-import Html.Attributes exposing (style, type_, placeholder, value, class)
+import Html.Attributes exposing (style, type_, placeholder, value, class, hidden, classList)
 import Json.Decode as Json
 
 -- Importing the Chore module
@@ -162,10 +162,21 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
+  let
+      completed = onlyCompleted True model
+      lengthCompleted = List.length completed
+      notcompleted = onlyCompleted False model
+      numberchores = List.length model.allchores
+      allchorescompleted = 
+        if numberchores == 0 then
+          False
+        else numberchores == lengthCompleted
+  in
+      
   div []
     [ h1 [] [ text "todos" ]
     , div [ class "header" ] 
-        [ button [ class "toggle-all" , onClick ToggleAll ] []
+        [ button [ classList [("toggle-all", True), ("alldone", allchorescompleted) ], onClick ToggleAll ] []
         , input 
           [ class "newchore"
           , placeholder "What needs to be done?"
@@ -186,18 +197,29 @@ view model =
           All -> 
             chorelist model.allchores
             )
-    , div [ class "footer" ]
-      [ p [class "items-left "] [text (itemslfet (onlyCompleted False model))]
-      , button [ class "view", onClick (ChangeView All) ] [ text "All"]
-      , button [ class "view", onClick (ChangeView Active) ] [ text "Active"]
-      , button [ class "view", onClick (ChangeView Completed) ] [ text "Completed"]
-      , button [ class "clear-completed", onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString (List.length (onlyCompleted True model))) ++ ")" ) ]
+    , div 
+      [ class "footer"
+      , hidden (numberchores==0) ]
+      [ p [class "items-left"] [text (itemslfet notcompleted)]
+      , button [ class (selectedview model.view All), onClick (ChangeView All) ] [ text "All"]
+      , button [ class (selectedview model.view Active), onClick (ChangeView Active) ] [ text "Active"]
+      , button [ class (selectedview model.view Completed), onClick (ChangeView Completed) ] [ text "Completed"]
+      , button [ classList ([("clear-completed", True), ("hide", (ishidden completed))]), onClick ClearCompleted ] [ text ("Clear completed (" ++ (toString lengthCompleted ++ ")" ))]
       ]
     , p [] [text ("Currently viewing " ++ visibilitystring model.view )]
     ]
 
-
 -- VIEW HELPER FUNCTIONS
+
+-- selected view corresponds to highlighted button
+selectedview : Visibility -> Visibility -> String
+selectedview visibility button = 
+  if visibility == button then "selected" else "notselected"
+
+-- check if the list of completed chores is empty, and thus is the "clear completed" button should be hidden
+ishidden : List Chore -> Bool
+ishidden chores = 
+  List.isEmpty chores
 
 -- onKeyDown and enterKey allow to register when "Enter" is pressed and attach a msg to that action
 onKeyDown : (Int -> Msg) -> Attribute Msg
@@ -230,7 +252,5 @@ chorelist list =
 
 
 -- NEXT STEPS 
--- ensure user knows what view they are on (for now I just added a line of text, fix with css by highlighting button)
 -- double-click on a to-do allows you to mofify it (able to modify - I think css needs to be set up to fully implement this)
--- Display buttons only when the actions are possible (css)
 -- the actual todo website stores the tasks somwhere (refreshing the page does not delete previous tasks) - how do I implement that?

@@ -8354,6 +8354,14 @@ var _user$project$Chore$enterKey = F2(
 		return _elm_lang$core$Native_Utils.eq($int, 13) ? msg : _user$project$Chore$NoOp;
 	});
 var _user$project$Chore$view = function (chore) {
+	var isbeingedited = function () {
+		var _p6 = chore.changedchore;
+		if (_p6.ctor === 'Nothing') {
+			return false;
+		} else {
+			return true;
+		}
+	}();
 	return A2(
 		_elm_lang$html$Html$li,
 		{ctor: '[]'},
@@ -8363,8 +8371,21 @@ var _user$project$Chore$view = function (chore) {
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('chore'),
-					_1: {ctor: '[]'}
+					_0: _elm_lang$html$Html_Attributes$classList(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'chore', _1: true},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'completed', _1: chore.completed},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$hidden(isbeingedited),
+						_1: {ctor: '[]'}
+					}
 				},
 				{
 					ctor: '::',
@@ -8428,7 +8449,11 @@ var _user$project$Chore$view = function (chore) {
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$class('editing-chore'),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$hidden(!isbeingedited),
+							_1: {ctor: '[]'}
+						}
 					},
 					{
 						ctor: '::',
@@ -8478,6 +8503,13 @@ var _user$project$Main$onKeyDown = function (tagger) {
 		'keydown',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
+var _user$project$Main$ishidden = function (chores) {
+	return _elm_lang$core$List$isEmpty(chores);
+};
+var _user$project$Main$selectedview = F2(
+	function (visibility, button) {
+		return _elm_lang$core$Native_Utils.eq(visibility, button) ? 'selected' : 'notselected';
+	});
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -8684,6 +8716,11 @@ var _user$project$Main$enterKey = function ($int) {
 	return _elm_lang$core$Native_Utils.eq($int, 13) ? _user$project$Main$NewChore : _user$project$Main$NoOp;
 };
 var _user$project$Main$view = function (model) {
+	var numberchores = _elm_lang$core$List$length(model.allchores);
+	var notcompleted = A2(_user$project$Main$onlyCompleted, false, model);
+	var completed = A2(_user$project$Main$onlyCompleted, true, model);
+	var lengthCompleted = _elm_lang$core$List$length(completed);
+	var allchorescompleted = _elm_lang$core$Native_Utils.eq(numberchores, 0) ? false : _elm_lang$core$Native_Utils.eq(numberchores, lengthCompleted);
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -8712,7 +8749,16 @@ var _user$project$Main$view = function (model) {
 							_elm_lang$html$Html$button,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('toggle-all'),
+								_0: _elm_lang$html$Html_Attributes$classList(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'toggle-all', _1: true},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'alldone', _1: allchorescompleted},
+											_1: {ctor: '[]'}
+										}
+									}),
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleAll),
@@ -8782,7 +8828,12 @@ var _user$project$Main$view = function (model) {
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html_Attributes$class('footer'),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$hidden(
+										_elm_lang$core$Native_Utils.eq(numberchores, 0)),
+									_1: {ctor: '[]'}
+								}
 							},
 							{
 								ctor: '::',
@@ -8790,14 +8841,13 @@ var _user$project$Main$view = function (model) {
 									_elm_lang$html$Html$p,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('items-left '),
+										_0: _elm_lang$html$Html_Attributes$class('items-left'),
 										_1: {ctor: '[]'}
 									},
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html$text(
-											_user$project$Main$itemslfet(
-												A2(_user$project$Main$onlyCompleted, false, model))),
+											_user$project$Main$itemslfet(notcompleted)),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -8806,7 +8856,8 @@ var _user$project$Main$view = function (model) {
 										_elm_lang$html$Html$button,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('view'),
+											_0: _elm_lang$html$Html_Attributes$class(
+												A2(_user$project$Main$selectedview, model.view, _user$project$Main$All)),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$html$Html_Events$onClick(
@@ -8825,7 +8876,8 @@ var _user$project$Main$view = function (model) {
 											_elm_lang$html$Html$button,
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('view'),
+												_0: _elm_lang$html$Html_Attributes$class(
+													A2(_user$project$Main$selectedview, model.view, _user$project$Main$Active)),
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$html$Html_Events$onClick(
@@ -8844,7 +8896,8 @@ var _user$project$Main$view = function (model) {
 												_elm_lang$html$Html$button,
 												{
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$class('view'),
+													_0: _elm_lang$html$Html_Attributes$class(
+														A2(_user$project$Main$selectedview, model.view, _user$project$Main$Completed)),
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$html$Html_Events$onClick(
@@ -8863,7 +8916,20 @@ var _user$project$Main$view = function (model) {
 													_elm_lang$html$Html$button,
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$class('clear-completed'),
+														_0: _elm_lang$html$Html_Attributes$classList(
+															{
+																ctor: '::',
+																_0: {ctor: '_Tuple2', _0: 'clear-completed', _1: true},
+																_1: {
+																	ctor: '::',
+																	_0: {
+																		ctor: '_Tuple2',
+																		_0: 'hide',
+																		_1: _user$project$Main$ishidden(completed)
+																	},
+																	_1: {ctor: '[]'}
+																}
+															}),
 														_1: {
 															ctor: '::',
 															_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$ClearCompleted),
@@ -8878,9 +8944,7 @@ var _user$project$Main$view = function (model) {
 																'Clear completed (',
 																A2(
 																	_elm_lang$core$Basics_ops['++'],
-																	_elm_lang$core$Basics$toString(
-																		_elm_lang$core$List$length(
-																			A2(_user$project$Main$onlyCompleted, true, model))),
+																	_elm_lang$core$Basics$toString(lengthCompleted),
 																	')'))),
 														_1: {ctor: '[]'}
 													}),
