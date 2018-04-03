@@ -102,89 +102,6 @@ var _user$project$Main$updateC = F2(
 			isChore2(newchore.id),
 			model.allchores);
 	});
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p4 = msg;
-		switch (_p4.ctor) {
-			case 'ChoreMsg':
-				var newc = A2(_user$project$Chore$update, _p4._1, _p4._0);
-				var newlist = A2(_user$project$Main$updateC, newc, model);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							allchores: _user$project$Main$discardEmpty(newlist)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'PreparingChore':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							newchore: _elm_lang$core$Maybe$Just(_p4._0)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'NewChore':
-				var _p5 = model.newchore;
-				if (_p5.ctor === 'Nothing') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					var newc = A2(_user$project$Chore$init, _p5._0, model.nextid);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								allchores: A2(
-									_elm_lang$core$Basics_ops['++'],
-									model.allchores,
-									{
-										ctor: '::',
-										_0: newc,
-										_1: {ctor: '[]'}
-									}),
-								newchore: _elm_lang$core$Maybe$Nothing,
-								nextid: model.nextid + 1
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'ChangeView':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{view: _p4._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ToggleAll':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							allchores: _user$project$Main$toggleall(model)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							allchores: A2(_user$project$Main$onlyCompleted, false, model)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
-	});
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
 		return {allchores: a, nextid: b, view: c, newchore: d};
@@ -224,6 +141,108 @@ var _user$project$Main$PreparingChore = function (a) {
 	return {ctor: 'PreparingChore', _0: a};
 };
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
+var _user$project$Main$focusOnChore = function (elementId) {
+	return A2(
+		_elm_lang$core$Task$attempt,
+		function (_p4) {
+			return _user$project$Main$NoOp;
+		},
+		_elm_lang$dom$Dom$focus(
+			_elm_lang$core$Basics$toString(elementId)));
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p5 = msg;
+		switch (_p5.ctor) {
+			case 'ChoreMsg':
+				var _p9 = _p5._1;
+				var _p8 = _p5._0;
+				var _p6 = A2(_user$project$Chore$update, _p9, _p8);
+				var newc = _p6._0;
+				var newlist = A2(_user$project$Main$updateC, newc, model);
+				var newmodel = _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						allchores: _user$project$Main$discardEmpty(newlist)
+					});
+				var _p7 = _p9;
+				if (_p7.ctor === 'RewriteChore') {
+					return {
+						ctor: '_Tuple2',
+						_0: newmodel,
+						_1: _user$project$Main$focusOnChore(
+							_user$project$Chore$makeId(_p8))
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: newmodel, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'PreparingChore':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							newchore: _elm_lang$core$Maybe$Just(_p5._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewChore':
+				var _p10 = model.newchore;
+				if (_p10.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var newc = A2(_user$project$Chore$init, _p10._0, model.nextid);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								allchores: A2(
+									_elm_lang$core$Basics_ops['++'],
+									model.allchores,
+									{
+										ctor: '::',
+										_0: newc,
+										_1: {ctor: '[]'}
+									}),
+								newchore: _elm_lang$core$Maybe$Nothing,
+								nextid: model.nextid + 1
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'ChangeView':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{view: _p5._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleAll':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							allchores: _user$project$Main$toggleall(model)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							allchores: A2(_user$project$Main$onlyCompleted, false, model)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
 var _user$project$Main$enterKey = function ($int) {
 	return _elm_lang$core$Native_Utils.eq($int, 13) ? _user$project$Main$NewChore : _user$project$Main$NoOp;
 };
@@ -298,11 +317,11 @@ var _user$project$Main$view = function (model) {
 													ctor: '::',
 													_0: _elm_lang$html$Html_Attributes$value(
 														function () {
-															var _p6 = model.newchore;
-															if (_p6.ctor === 'Nothing') {
+															var _p11 = model.newchore;
+															if (_p11.ctor === 'Nothing') {
 																return '';
 															} else {
-																return _p6._0;
+																return _p11._0;
 															}
 														}()),
 													_1: {ctor: '[]'}
@@ -321,8 +340,8 @@ var _user$project$Main$view = function (model) {
 						_elm_lang$html$Html$ul,
 						{ctor: '[]'},
 						function () {
-							var _p7 = model.view;
-							switch (_p7.ctor) {
+							var _p12 = model.view;
+							switch (_p12.ctor) {
 								case 'Completed':
 									return _user$project$Main$chorelist(
 										A2(_user$project$Main$onlyCompleted, true, model));
@@ -339,13 +358,21 @@ var _user$project$Main$view = function (model) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('footer'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$hidden(
-										_elm_lang$core$Native_Utils.eq(numberchores, 0)),
-									_1: {ctor: '[]'}
-								}
+								_0: _elm_lang$html$Html_Attributes$classList(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'footer', _1: true},
+										_1: {
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: 'hide',
+												_1: _elm_lang$core$List$isEmpty(model.allchores)
+											},
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
 							},
 							{
 								ctor: '::',

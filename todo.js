@@ -3746,6 +3746,203 @@ var _elm_lang$core$Result$fromMaybe = F2(
 		}
 	});
 
+var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
+var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
+var _elm_lang$core$Task$spawnCmd = F2(
+	function (router, _p0) {
+		var _p1 = _p0;
+		return _elm_lang$core$Native_Scheduler.spawn(
+			A2(
+				_elm_lang$core$Task$andThen,
+				_elm_lang$core$Platform$sendToApp(router),
+				_p1._0));
+	});
+var _elm_lang$core$Task$fail = _elm_lang$core$Native_Scheduler.fail;
+var _elm_lang$core$Task$mapError = F2(
+	function (convert, task) {
+		return A2(
+			_elm_lang$core$Task$onError,
+			function (_p2) {
+				return _elm_lang$core$Task$fail(
+					convert(_p2));
+			},
+			task);
+	});
+var _elm_lang$core$Task$succeed = _elm_lang$core$Native_Scheduler.succeed;
+var _elm_lang$core$Task$map = F2(
+	function (func, taskA) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return _elm_lang$core$Task$succeed(
+					func(a));
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map2 = F3(
+	function (func, taskA, taskB) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return _elm_lang$core$Task$succeed(
+							A2(func, a, b));
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map3 = F4(
+	function (func, taskA, taskB, taskC) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (c) {
+								return _elm_lang$core$Task$succeed(
+									A3(func, a, b, c));
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map4 = F5(
+	function (func, taskA, taskB, taskC, taskD) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (c) {
+								return A2(
+									_elm_lang$core$Task$andThen,
+									function (d) {
+										return _elm_lang$core$Task$succeed(
+											A4(func, a, b, c, d));
+									},
+									taskD);
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map5 = F6(
+	function (func, taskA, taskB, taskC, taskD, taskE) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (c) {
+								return A2(
+									_elm_lang$core$Task$andThen,
+									function (d) {
+										return A2(
+											_elm_lang$core$Task$andThen,
+											function (e) {
+												return _elm_lang$core$Task$succeed(
+													A5(func, a, b, c, d, e));
+											},
+											taskE);
+									},
+									taskD);
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$sequence = function (tasks) {
+	var _p3 = tasks;
+	if (_p3.ctor === '[]') {
+		return _elm_lang$core$Task$succeed(
+			{ctor: '[]'});
+	} else {
+		return A3(
+			_elm_lang$core$Task$map2,
+			F2(
+				function (x, y) {
+					return {ctor: '::', _0: x, _1: y};
+				}),
+			_p3._0,
+			_elm_lang$core$Task$sequence(_p3._1));
+	}
+};
+var _elm_lang$core$Task$onEffects = F3(
+	function (router, commands, state) {
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_p4) {
+				return {ctor: '_Tuple0'};
+			},
+			_elm_lang$core$Task$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					_elm_lang$core$Task$spawnCmd(router),
+					commands)));
+	});
+var _elm_lang$core$Task$init = _elm_lang$core$Task$succeed(
+	{ctor: '_Tuple0'});
+var _elm_lang$core$Task$onSelfMsg = F3(
+	function (_p7, _p6, _p5) {
+		return _elm_lang$core$Task$succeed(
+			{ctor: '_Tuple0'});
+	});
+var _elm_lang$core$Task$command = _elm_lang$core$Native_Platform.leaf('Task');
+var _elm_lang$core$Task$Perform = function (a) {
+	return {ctor: 'Perform', _0: a};
+};
+var _elm_lang$core$Task$perform = F2(
+	function (toMessage, task) {
+		return _elm_lang$core$Task$command(
+			_elm_lang$core$Task$Perform(
+				A2(_elm_lang$core$Task$map, toMessage, task)));
+	});
+var _elm_lang$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return _elm_lang$core$Task$command(
+			_elm_lang$core$Task$Perform(
+				A2(
+					_elm_lang$core$Task$onError,
+					function (_p8) {
+						return _elm_lang$core$Task$succeed(
+							resultToMessage(
+								_elm_lang$core$Result$Err(_p8)));
+					},
+					A2(
+						_elm_lang$core$Task$andThen,
+						function (_p9) {
+							return _elm_lang$core$Task$succeed(
+								resultToMessage(
+									_elm_lang$core$Result$Ok(_p9)));
+						},
+						task))));
+	});
+var _elm_lang$core$Task$cmdMap = F2(
+	function (tagger, _p10) {
+		var _p11 = _p10;
+		return _elm_lang$core$Task$Perform(
+			A2(_elm_lang$core$Task$map, tagger, _p11._0));
+	});
+_elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_Debug = function() {
@@ -5755,6 +5952,195 @@ var _elm_lang$core$Tuple$second = function (_p4) {
 var _elm_lang$core$Tuple$first = function (_p6) {
 	var _p7 = _p6;
 	return _p7._0;
+};
+
+var _elm_lang$dom$Native_Dom = function() {
+
+var fakeNode = {
+	addEventListener: function() {},
+	removeEventListener: function() {}
+};
+
+var onDocument = on(typeof document !== 'undefined' ? document : fakeNode);
+var onWindow = on(typeof window !== 'undefined' ? window : fakeNode);
+
+function on(node)
+{
+	return function(eventName, decoder, toTask)
+	{
+		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
+
+			function performTask(event)
+			{
+				var result = A2(_elm_lang$core$Json_Decode$decodeValue, decoder, event);
+				if (result.ctor === 'Ok')
+				{
+					_elm_lang$core$Native_Scheduler.rawSpawn(toTask(result._0));
+				}
+			}
+
+			node.addEventListener(eventName, performTask);
+
+			return function()
+			{
+				node.removeEventListener(eventName, performTask);
+			};
+		});
+	};
+}
+
+var rAF = typeof requestAnimationFrame !== 'undefined'
+	? requestAnimationFrame
+	: function(callback) { callback(); };
+
+function withNode(id, doStuff)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		rAF(function()
+		{
+			var node = document.getElementById(id);
+			if (node === null)
+			{
+				callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'NotFound', _0: id }));
+				return;
+			}
+			callback(_elm_lang$core$Native_Scheduler.succeed(doStuff(node)));
+		});
+	});
+}
+
+
+// FOCUS
+
+function focus(id)
+{
+	return withNode(id, function(node) {
+		node.focus();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function blur(id)
+{
+	return withNode(id, function(node) {
+		node.blur();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SCROLLING
+
+function getScrollTop(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollTop;
+	});
+}
+
+function setScrollTop(id, desiredScrollTop)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = desiredScrollTop;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toBottom(id)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = node.scrollHeight;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function getScrollLeft(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollLeft;
+	});
+}
+
+function setScrollLeft(id, desiredScrollLeft)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = desiredScrollLeft;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toRight(id)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = node.scrollWidth;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SIZE
+
+function width(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollWidth;
+			case 'VisibleContent':
+				return node.clientWidth;
+			case 'VisibleContentWithBorders':
+				return node.offsetWidth;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.right - rect.left;
+		}
+	});
+}
+
+function height(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollHeight;
+			case 'VisibleContent':
+				return node.clientHeight;
+			case 'VisibleContentWithBorders':
+				return node.offsetHeight;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.bottom - rect.top;
+		}
+	});
+}
+
+return {
+	onDocument: F3(onDocument),
+	onWindow: F3(onWindow),
+
+	focus: focus,
+	blur: blur,
+
+	getScrollTop: getScrollTop,
+	setScrollTop: F2(setScrollTop),
+	getScrollLeft: getScrollLeft,
+	setScrollLeft: F2(setScrollLeft),
+	toBottom: toBottom,
+	toRight: toRight,
+
+	height: F2(height),
+	width: F2(width)
+};
+
+}();
+
+var _elm_lang$dom$Dom$blur = _elm_lang$dom$Native_Dom.blur;
+var _elm_lang$dom$Dom$focus = _elm_lang$dom$Native_Dom.focus;
+var _elm_lang$dom$Dom$NotFound = function (a) {
+	return {ctor: 'NotFound', _0: a};
 };
 
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrap;
@@ -8260,6 +8646,12 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Chore$makeId = function (chore) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'chore-',
+		_elm_lang$core$Basics$toString(chore.id));
+};
 var _user$project$Chore$onKeyDown = function (tagger) {
 	return A2(
 		_elm_lang$html$Html_Events$on,
@@ -8267,14 +8659,9 @@ var _user$project$Chore$onKeyDown = function (tagger) {
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
 var _user$project$Chore$description = function (chore) {
-	var _p0 = chore.changedchore;
+	var _p0 = chore;
 	if (_p0.ctor === 'Nothing') {
-		var _p1 = chore.chore;
-		if (_p1.ctor === 'Nothing') {
-			return '';
-		} else {
-			return _p1._0;
-		}
+		return '';
 	} else {
 		return _p0._0;
 	}
@@ -8284,48 +8671,72 @@ var _user$project$Chore$subscriptions = function (chore) {
 };
 var _user$project$Chore$update = F2(
 	function (msg, chore) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'NoOp':
-				return chore;
+				return {ctor: '_Tuple2', _0: chore, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'DeleteChore':
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{chore: _elm_lang$core$Maybe$Nothing});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{chore: _elm_lang$core$Maybe$Nothing}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'RewriteChore':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{changedchore: chore.chore}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'StoreChanges':
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{
-						changedchore: _elm_lang$core$Maybe$Just(_p2._0)
-					});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{
+							changedchore: _elm_lang$core$Maybe$Just(_p1._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'CommitChange':
-				var _p3 = chore.changedchore;
-				if (_p3.ctor === 'Nothing') {
-					return chore;
+				var _p2 = chore.changedchore;
+				if (_p2.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: chore, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var _p5 = _p3._0;
-					var _p4 = _p5;
-					if (_p4 === '') {
-						return _elm_lang$core$Native_Utils.update(
-							chore,
-							{chore: _elm_lang$core$Maybe$Nothing});
+					var _p4 = _p2._0;
+					var _p3 = _p4;
+					if (_p3 === '') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								chore,
+								{chore: _elm_lang$core$Maybe$Nothing}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
 					} else {
-						return _elm_lang$core$Native_Utils.update(
-							chore,
-							{
-								chore: _elm_lang$core$Maybe$Just(_p5),
-								changedchore: _elm_lang$core$Maybe$Nothing
-							});
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								chore,
+								{
+									chore: _elm_lang$core$Maybe$Just(_p4),
+									changedchore: _elm_lang$core$Maybe$Nothing
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
 					}
 				}
-			case 'ToggleChore':
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{completed: !chore.completed});
 			default:
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{changedchore: chore.chore});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{completed: !chore.completed}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Chore$Chore = F4(
@@ -8355,8 +8766,8 @@ var _user$project$Chore$enterKey = F2(
 	});
 var _user$project$Chore$view = function (chore) {
 	var isbeingedited = function () {
-		var _p6 = chore.changedchore;
-		if (_p6.ctor === 'Nothing') {
+		var _p5 = chore.changedchore;
+		if (_p5.ctor === 'Nothing') {
 			return false;
 		} else {
 			return true;
@@ -8421,7 +8832,7 @@ var _user$project$Chore$view = function (chore) {
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
-									_user$project$Chore$description(chore)),
+									_user$project$Chore$description(chore.chore)),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -8461,19 +8872,24 @@ var _user$project$Chore$view = function (chore) {
 							_elm_lang$html$Html$input,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$value(
-									_user$project$Chore$description(chore)),
+								_0: _elm_lang$html$Html_Attributes$id(
+									_user$project$Chore$makeId(chore)),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
+									_0: _elm_lang$html$Html_Attributes$value(
+										_user$project$Chore$description(chore.changedchore)),
 									_1: {
 										ctor: '::',
-										_0: _user$project$Chore$onKeyDown(
-											_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+										_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: _user$project$Chore$onKeyDown(
+													_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}
@@ -8590,89 +9006,6 @@ var _user$project$Main$updateC = F2(
 			isChore2(newchore.id),
 			model.allchores);
 	});
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p4 = msg;
-		switch (_p4.ctor) {
-			case 'ChoreMsg':
-				var newc = A2(_user$project$Chore$update, _p4._1, _p4._0);
-				var newlist = A2(_user$project$Main$updateC, newc, model);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							allchores: _user$project$Main$discardEmpty(newlist)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'PreparingChore':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							newchore: _elm_lang$core$Maybe$Just(_p4._0)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'NewChore':
-				var _p5 = model.newchore;
-				if (_p5.ctor === 'Nothing') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					var newc = A2(_user$project$Chore$init, _p5._0, model.nextid);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								allchores: A2(
-									_elm_lang$core$Basics_ops['++'],
-									model.allchores,
-									{
-										ctor: '::',
-										_0: newc,
-										_1: {ctor: '[]'}
-									}),
-								newchore: _elm_lang$core$Maybe$Nothing,
-								nextid: model.nextid + 1
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
-			case 'ChangeView':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{view: _p4._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ToggleAll':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							allchores: _user$project$Main$toggleall(model)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							allchores: A2(_user$project$Main$onlyCompleted, false, model)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
-	});
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
 		return {allchores: a, nextid: b, view: c, newchore: d};
@@ -8712,6 +9045,108 @@ var _user$project$Main$PreparingChore = function (a) {
 	return {ctor: 'PreparingChore', _0: a};
 };
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
+var _user$project$Main$focusOnChore = function (elementId) {
+	return A2(
+		_elm_lang$core$Task$attempt,
+		function (_p4) {
+			return _user$project$Main$NoOp;
+		},
+		_elm_lang$dom$Dom$focus(
+			_elm_lang$core$Basics$toString(elementId)));
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p5 = msg;
+		switch (_p5.ctor) {
+			case 'ChoreMsg':
+				var _p9 = _p5._1;
+				var _p8 = _p5._0;
+				var _p6 = A2(_user$project$Chore$update, _p9, _p8);
+				var newc = _p6._0;
+				var newlist = A2(_user$project$Main$updateC, newc, model);
+				var newmodel = _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						allchores: _user$project$Main$discardEmpty(newlist)
+					});
+				var _p7 = _p9;
+				if (_p7.ctor === 'RewriteChore') {
+					return {
+						ctor: '_Tuple2',
+						_0: newmodel,
+						_1: _user$project$Main$focusOnChore(
+							_user$project$Chore$makeId(_p8))
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: newmodel, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'PreparingChore':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							newchore: _elm_lang$core$Maybe$Just(_p5._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NewChore':
+				var _p10 = model.newchore;
+				if (_p10.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var newc = A2(_user$project$Chore$init, _p10._0, model.nextid);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								allchores: A2(
+									_elm_lang$core$Basics_ops['++'],
+									model.allchores,
+									{
+										ctor: '::',
+										_0: newc,
+										_1: {ctor: '[]'}
+									}),
+								newchore: _elm_lang$core$Maybe$Nothing,
+								nextid: model.nextid + 1
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'ChangeView':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{view: _p5._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleAll':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							allchores: _user$project$Main$toggleall(model)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							allchores: A2(_user$project$Main$onlyCompleted, false, model)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
 var _user$project$Main$enterKey = function ($int) {
 	return _elm_lang$core$Native_Utils.eq($int, 13) ? _user$project$Main$NewChore : _user$project$Main$NoOp;
 };
@@ -8786,11 +9221,11 @@ var _user$project$Main$view = function (model) {
 													ctor: '::',
 													_0: _elm_lang$html$Html_Attributes$value(
 														function () {
-															var _p6 = model.newchore;
-															if (_p6.ctor === 'Nothing') {
+															var _p11 = model.newchore;
+															if (_p11.ctor === 'Nothing') {
 																return '';
 															} else {
-																return _p6._0;
+																return _p11._0;
 															}
 														}()),
 													_1: {ctor: '[]'}
@@ -8809,8 +9244,8 @@ var _user$project$Main$view = function (model) {
 						_elm_lang$html$Html$ul,
 						{ctor: '[]'},
 						function () {
-							var _p7 = model.view;
-							switch (_p7.ctor) {
+							var _p12 = model.view;
+							switch (_p12.ctor) {
 								case 'Completed':
 									return _user$project$Main$chorelist(
 										A2(_user$project$Main$onlyCompleted, true, model));
@@ -8827,13 +9262,21 @@ var _user$project$Main$view = function (model) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('footer'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$hidden(
-										_elm_lang$core$Native_Utils.eq(numberchores, 0)),
-									_1: {ctor: '[]'}
-								}
+								_0: _elm_lang$html$Html_Attributes$classList(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'footer', _1: true},
+										_1: {
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: 'hide',
+												_1: _elm_lang$core$List$isEmpty(model.allchores)
+											},
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
 							},
 							{
 								ctor: '::',

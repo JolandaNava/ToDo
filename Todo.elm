@@ -2,6 +2,8 @@ import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput)
 import Html.Attributes exposing (style, type_, placeholder, value, class, hidden, classList)
 import Json.Decode as Json
+import Dom
+import Task
 
 -- Importing the Chore module
 import Chore exposing (Chore)
@@ -58,6 +60,13 @@ toggleall model =
         List.map (\chore -> {chore | completed = True }) model.allchores
 
 
+-- As the chore is double-clicked to be edited, the focus should be automatically put to the editing input
+-- this function takes the id of the element and focuses on it
+focusOnChore : String -> Cmd Msg
+focusOnChore elementId =
+    Task.attempt (\_ -> NoOp) (Dom.focus (toString elementId))
+
+
 type Msg
   = NoOp
   | PreparingChore String
@@ -73,10 +82,14 @@ update msg model =
   case msg of
     ChoreMsg chore msg ->
       let 
-        newc =  Chore.update msg chore
+        (newc, _) =  Chore.update msg chore
         newlist = updateC newc model
+        newmodel = { model | allchores = (discardEmpty newlist)}
       in
-        ({ model | allchores = (discardEmpty newlist)}, Cmd.none)
+        case msg of
+          (Chore.RewriteChore) -> (newmodel, focusOnChore (Chore.makeId chore))
+          _ -> (newmodel, Cmd.none)
+          -- this is not working, how do I focus on the input?
 
     NoOp ->
       (model, Cmd.none)
@@ -198,8 +211,7 @@ view model =
             chorelist model.allchores
             )
     , div 
-      [ class "footer"
-      , hidden (numberchores==0) ]
+      [ classList [("footer", True), ("hide", (List.isEmpty model.allchores))]]
       [ p [class "items-left"] [text (itemslfet notcompleted)]
       , button [ class (selectedview model.view All), onClick (ChangeView All) ] [ text "All"]
       , button [ class (selectedview model.view Active), onClick (ChangeView Active) ] [ text "Active"]
@@ -252,5 +264,5 @@ chorelist list =
 
 
 -- NEXT STEPS 
--- double-click on a to-do allows you to mofify it (able to modify - I think css needs to be set up to fully implement this)
+-- how do I focus on the input when a chore is double-clicked to edit?
 -- the actual todo website stores the tasks somwhere (refreshing the page does not delete previous tasks) - how do I implement that?

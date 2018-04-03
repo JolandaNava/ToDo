@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput, onDoubleClick, onBlur)
 import Html.Attributes exposing (style, type_, placeholder, value, class, hidden, classList)
 import Json.Decode as Json
+import Dom
+import Task
 
 -- The Chore file on the todomvc does not have a main function at all, I am following that
 
@@ -22,7 +24,6 @@ init chore id =
   Chore (Just chore) id False Nothing
 
 
-
 -- UPDATE
 
 type Msg
@@ -33,32 +34,33 @@ type Msg
     | DeleteChore 
     | ToggleChore 
 
-update : Msg -> Chore -> Chore
+update : Msg -> Chore -> (Chore, Cmd Msg)
 update msg chore =
   case msg of
     NoOp ->
-        chore
+        (chore, Cmd.none)
     
     DeleteChore ->
-        { chore | chore = Nothing}
+        ({ chore | chore = Nothing}, Cmd.none)
     
+    RewriteChore ->
+        ({ chore | changedchore = chore.chore }, Cmd.none ) 
+        -- add comand
+
     StoreChanges text ->
-        { chore | changedchore = Just text }
+        ({ chore | changedchore = Just text }, Cmd.none)
 
     CommitChange ->
         case chore.changedchore of
             Nothing ->
-                chore
+                (chore, Cmd.none)
             Just text ->
                 case text of
-                    "" ->  { chore | chore = Nothing}
-                    _ -> { chore | chore = Just text, changedchore = Nothing}
-    
+                    "" ->  ({ chore | chore = Nothing}, Cmd.none)
+                    _ ->  ({ chore | chore = Just text, changedchore = Nothing}, Cmd.none)
+   
     ToggleChore ->
-        { chore | completed = not chore.completed }
-    
-    RewriteChore ->
-        { chore | changedchore = chore.chore }
+        ({ chore | completed = not chore.completed }, Cmd.none)
     
   
 
@@ -93,7 +95,7 @@ view chore =
             ] []
         , label 
             [ onDoubleClick RewriteChore ]
-            [ text (description chore)
+            [ text (description chore.chore)
             ]
         , button 
             [ onClick DeleteChore ] 
@@ -103,22 +105,21 @@ view chore =
         [ class "editing-chore"
         , hidden (not isbeingedited)]
         [ input 
-            [ value (description chore)
+            [ Html.Attributes.id (makeId chore)
+            , value (description chore.changedchore)
             , onInput StoreChanges
-            , onKeyDown (enterKey CommitChange)
             , onBlur CommitChange
+            , onKeyDown (enterKey CommitChange)
             ] []
         ]
     ]
 
 
-description : Chore -> String
+description : Maybe String -> String
 description chore =
-    case chore.changedchore of
+    case chore of
             Nothing ->
-                case chore.chore of
-                    Nothing -> ""
-                    Just text -> text
+                ""
             Just text -> text 
 
 onKeyDown : (Int -> Msg) -> Attribute Msg
@@ -132,6 +133,7 @@ enterKey msg int =
   else
     NoOp
 
-
--- NEXT STEPS
--- onBlur CommitChange command seems to not be working
+-- Creating the id that html will grab onto to focus on the chore that is being edited
+makeId : Chore -> String
+makeId chore = 
+    "chore-" ++ (toString chore.id)

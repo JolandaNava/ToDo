@@ -257,6 +257,10 @@ li:hover .chore button {
     border: 1px solid #ECD7D7;
 }
 
+.footer.hide {
+    visibility: hidden;
+}
+
 .clear-completed {
     width: 120px;
     height: 30px;
@@ -276,6 +280,5 @@ li:hover .chore button {
     make entire chore lable clickable
     chore height to change is text is long and wraps
     chore text to wrap when its max lenght is reached (now goes further and displaces the x button)
-    footer should not display if there are no chores (currently trying to use "hidden" attribute on the elm side)
 */
 

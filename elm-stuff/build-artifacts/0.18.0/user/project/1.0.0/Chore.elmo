@@ -1,3 +1,9 @@
+var _user$project$Chore$makeId = function (chore) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'chore-',
+		_elm_lang$core$Basics$toString(chore.id));
+};
 var _user$project$Chore$onKeyDown = function (tagger) {
 	return A2(
 		_elm_lang$html$Html_Events$on,
@@ -5,14 +11,9 @@ var _user$project$Chore$onKeyDown = function (tagger) {
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
 var _user$project$Chore$description = function (chore) {
-	var _p0 = chore.changedchore;
+	var _p0 = chore;
 	if (_p0.ctor === 'Nothing') {
-		var _p1 = chore.chore;
-		if (_p1.ctor === 'Nothing') {
-			return '';
-		} else {
-			return _p1._0;
-		}
+		return '';
 	} else {
 		return _p0._0;
 	}
@@ -22,48 +23,72 @@ var _user$project$Chore$subscriptions = function (chore) {
 };
 var _user$project$Chore$update = F2(
 	function (msg, chore) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'NoOp':
-				return chore;
+				return {ctor: '_Tuple2', _0: chore, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'DeleteChore':
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{chore: _elm_lang$core$Maybe$Nothing});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{chore: _elm_lang$core$Maybe$Nothing}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'RewriteChore':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{changedchore: chore.chore}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'StoreChanges':
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{
-						changedchore: _elm_lang$core$Maybe$Just(_p2._0)
-					});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{
+							changedchore: _elm_lang$core$Maybe$Just(_p1._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'CommitChange':
-				var _p3 = chore.changedchore;
-				if (_p3.ctor === 'Nothing') {
-					return chore;
+				var _p2 = chore.changedchore;
+				if (_p2.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: chore, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var _p5 = _p3._0;
-					var _p4 = _p5;
-					if (_p4 === '') {
-						return _elm_lang$core$Native_Utils.update(
-							chore,
-							{chore: _elm_lang$core$Maybe$Nothing});
+					var _p4 = _p2._0;
+					var _p3 = _p4;
+					if (_p3 === '') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								chore,
+								{chore: _elm_lang$core$Maybe$Nothing}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
 					} else {
-						return _elm_lang$core$Native_Utils.update(
-							chore,
-							{
-								chore: _elm_lang$core$Maybe$Just(_p5),
-								changedchore: _elm_lang$core$Maybe$Nothing
-							});
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								chore,
+								{
+									chore: _elm_lang$core$Maybe$Just(_p4),
+									changedchore: _elm_lang$core$Maybe$Nothing
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
 					}
 				}
-			case 'ToggleChore':
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{completed: !chore.completed});
 			default:
-				return _elm_lang$core$Native_Utils.update(
-					chore,
-					{changedchore: chore.chore});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						chore,
+						{completed: !chore.completed}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Chore$Chore = F4(
@@ -93,8 +118,8 @@ var _user$project$Chore$enterKey = F2(
 	});
 var _user$project$Chore$view = function (chore) {
 	var isbeingedited = function () {
-		var _p6 = chore.changedchore;
-		if (_p6.ctor === 'Nothing') {
+		var _p5 = chore.changedchore;
+		if (_p5.ctor === 'Nothing') {
 			return false;
 		} else {
 			return true;
@@ -159,7 +184,7 @@ var _user$project$Chore$view = function (chore) {
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
-									_user$project$Chore$description(chore)),
+									_user$project$Chore$description(chore.chore)),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -199,19 +224,24 @@ var _user$project$Chore$view = function (chore) {
 							_elm_lang$html$Html$input,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$value(
-									_user$project$Chore$description(chore)),
+								_0: _elm_lang$html$Html_Attributes$id(
+									_user$project$Chore$makeId(chore)),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
+									_0: _elm_lang$html$Html_Attributes$value(
+										_user$project$Chore$description(chore.changedchore)),
 									_1: {
 										ctor: '::',
-										_0: _user$project$Chore$onKeyDown(
-											_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+										_0: _elm_lang$html$Html_Events$onInput(_user$project$Chore$StoreChanges),
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Events$onBlur(_user$project$Chore$CommitChange),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: _user$project$Chore$onKeyDown(
+													_user$project$Chore$enterKey(_user$project$Chore$CommitChange)),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}
